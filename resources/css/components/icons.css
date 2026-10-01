@@ -1,0 +1,27 @@
+/* ============================================
+   ICÔNES (SVG)
+   ============================================ */
+
+.icon {
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* --- Tailles --- */
+.icon--xs { width: 14px; height: 14px; }
+.icon--sm { width: 16px; height: 16px; }
+.icon--md { width: 20px; height: 20px; }
+.icon--lg { width: 24px; height: 24px; }
+.icon--xl { width: 32px; height: 32px; }
+
+/* --- Couleurs --- */
+.icon--primary { color: #27357e; }
+.icon--accent  { color: #de7c0f; }
+.icon--success { color: #088e39; }
+.icon--danger  { color: #c8102e; }
+.icon--warning { color: #f6d01d; }
+.icon--muted   { color: #6b7190; }
