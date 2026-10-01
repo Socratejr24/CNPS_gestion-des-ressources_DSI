@@ -1,0 +1,198 @@
+/* ============================================
+   TABLES
+   ============================================ */
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 12px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.875rem;
+    background: #ffffff;
+}
+
+/* --- Head --- */
+.table thead th {
+    text-align: left;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6b7190;
+    padding: 0.85rem 1rem;
+    background: #f9fafc;
+    border-bottom: 1px solid #e2e5f0;
+    white-space: nowrap;
+}
+
+.table thead th:first-child { padding-left: 1.25rem; }
+.table thead th:last-child  { padding-right: 1.25rem; }
+
+/* --- Body --- */
+.table tbody td {
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid #eef0f6;
+    color: #1b2140;
+    vertical-align: middle;
+}
+
+.table tbody td:first-child { padding-left: 1.25rem; }
+.table tbody td:last-child  { padding-right: 1.25rem; }
+
+.table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.table tbody tr {
+    transition: background 0.1s ease;
+}
+
+.table tbody tr:hover {
+    background: #f9fafc;
+}
+
+/* --- Variantes --- */
+.table--striped tbody tr:nth-child(even) {
+    background: #fcfcfe;
+}
+
+.table--striped tbody tr:nth-child(even):hover {
+    background: #f5f6fa;
+}
+
+/* --- Colonnes spéciales --- */
+.table__col-narrow { width: 1%; white-space: nowrap; }
+.table__col-right  { text-align: right; }
+
+/* --- Cellule actions --- */
+.table__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    justify-content: flex-end;
+}
+
+.table__action {
+    width: 32px;
+    height: 32px;
+    border-radius: 7px;
+    border: 0;
+    background: transparent;
+    color: #6b7190;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    text-decoration: none;
+}
+
+.table__action:hover {
+    background: #f5f6fa;
+    color: #27357e;
+}
+
+.table__action--danger:hover {
+    background: #fadadf;
+    color: #c8102e;
+}
+
+/* --- Empty state --- */
+.table__empty {
+    padding: 3rem 1.5rem;
+    text-align: center;
+    color: #6b7190;
+}
+
+.table__empty-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    background: #f5f6fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #a8adc7;
+}
+
+.table__empty-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1b2140;
+    margin: 0 0 0.35rem;
+}
+
+.table__empty-text {
+    font-size: 0.85rem;
+    margin: 0;
+    max-width: 380px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* --- Pagination --- */
+.table-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 1.25rem;
+    border-top: 1px solid #e2e5f0;
+    background: #f9fafc;
+    font-size: 0.8rem;
+    color: #6b7190;
+    flex-wrap: wrap;
+}
+
+.table-pagination__info {
+    flex: 1;
+}
+
+.table-pagination__nav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.table-pagination__btn {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 0.6rem;
+    border: 1px solid #e2e5f0;
+    background: #ffffff;
+    color: #1b2140;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 500;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.table-pagination__btn:hover:not(:disabled):not(.table-pagination__btn--active) {
+    background: #f5f6fa;
+    border-color: #27357e;
+    color: #27357e;
+}
+
+.table-pagination__btn--active {
+    background: #27357e;
+    border-color: #27357e;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.table-pagination__btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}

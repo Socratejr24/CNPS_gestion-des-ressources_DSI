@@ -6,15 +6,27 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
-                
+                // Base
                 'resources/css/app.css',
-                'resources/css/auth/login.css',
-                'resources/css/layouts/app.css',
                 'resources/js/app.js',
-                'resources/css/components/buttons.css',//Nouveau
-                'resources/css/components/forms.css',//Nouveau
-                'resources/css/components/badges.css',//Nouveau
-                'resources/css/components/icons.css'//Nouveau
+
+                // Layouts
+                'resources/css/layouts/app.css',
+
+                // Auth
+                'resources/css/auth/login.css',
+
+                // Composants
+                'resources/css/components/buttons.css',
+                'resources/css/components/forms.css',
+                'resources/css/components/badges.css',
+                'resources/css/components/icons.css',
+                'resources/css/components/cards.css',
+                'resources/css/components/tables.css',
+                'resources/css/components/alerts.css',
+                'resources/css/components/modals.css',
+                'resources/css/components/toasts.css',
+                'resources/css/components/filters.css',
             ],
             refresh: true,
         }),

@@ -63,7 +63,10 @@
         {{-- Modal déconnexion --}}
         @include('layouts.partials.logout-modal')
 
+           {{-- Container des toasts (global) --}}
+        <x-toast-container />
     </div>
+    
 
     @stack('scripts')
 </body>
