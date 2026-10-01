@@ -1,0 +1,299 @@
+/* ============================================
+   Page de connexion — Style C (Immersif)
+   ============================================ */
+
+/* --- Conteneur principal avec fond dégradé --- */
+.login-bg {
+    background: linear-gradient(135deg, #141a4a 0%, #27357e 60%, #1b2a6b 100%);
+    min-height: calc(100vh - 6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* --- Blobs décoratifs flottants --- */
+.login-blob {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(2px);
+    pointer-events: none;
+    animation: login-blob-float 8s ease-in-out infinite;
+}
+
+.login-blob--orange {
+    width: 220px;
+    height: 220px;
+    background: #de7c0f;
+    opacity: 0.35;
+    top: -60px;
+    right: -40px;
+    animation-delay: 0s;
+}
+
+.login-blob--green {
+    width: 180px;
+    height: 180px;
+    background: #088e39;
+    opacity: 0.30;
+    bottom: -50px;
+    left: -40px;
+    animation-delay: -2s;
+}
+
+.login-blob--yellow {
+    width: 110px;
+    height: 110px;
+    background: #f6d01d;
+    opacity: 0.35;
+    bottom: 60px;
+    right: 12%;
+    animation-delay: -4s;
+}
+
+@keyframes login-blob-float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50%      { transform: translate(10px, -15px) scale(1.05); }
+}
+
+/* --- Carte du formulaire --- */
+.login-card {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 420px;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 2rem;
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.30),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+    animation: login-card-in 0.4s ease-out;
+}
+
+@keyframes login-card-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Logo --- */
+.login-logo {
+    height: 50px;
+    display: block;
+    margin: 0 auto 0.75rem;
+}
+
+.login-title {
+    text-align: center;
+    font-family: 'Poppins', 'Inter', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #27357e;
+    margin: 0 0 0.25rem;
+}
+
+.login-subtitle {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #6b7190;
+    margin: 0 0 1.25rem;
+}
+
+/* --- Sélecteur de mode (Agent / Prestataire) --- */
+.login-tabs {
+    display: flex;
+    background: #f5f6fa;
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 1.25rem;
+}
+
+.login-tab {
+    flex: 1;
+    border: 0;
+    background: transparent;
+    padding: 0.55rem;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6b7190;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.login-tab:hover {
+    color: #27357e;
+}
+
+.login-tab--active {
+    background: #ffffff;
+    color: #27357e;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* --- Champs du formulaire --- */
+.login-field {
+    margin-bottom: 1rem;
+}
+
+.login-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #1b2140;
+    margin-bottom: 0.4rem;
+}
+
+.login-input {
+    width: 100%;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid #e2e5f0;
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    color: #1b2140;
+    background: #ffffff;
+    transition: all 0.15s ease;
+    box-sizing: border-box;
+}
+
+.login-input::placeholder {
+    color: #a8adc7;
+}
+
+.login-input:focus {
+    outline: none;
+    border-color: #27357e;
+    box-shadow: 0 0 0 3px rgba(39, 53, 126, 0.15);
+}
+
+.login-input--error {
+    border-color: #c8102e;
+}
+
+.login-input--error:focus {
+    box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.15);
+}
+
+/* --- Champ mot de passe avec bouton œil --- */
+.login-password-wrap {
+    position: relative;
+}
+
+.login-password-wrap .login-input {
+    padding-right: 2.75rem;
+}
+
+.login-eye-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding: 0 0.75rem;
+    background: transparent;
+    border: 0;
+    color: #6b7190;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: color 0.15s ease;
+}
+
+.login-eye-btn:hover {
+    color: #27357e;
+}
+
+/* --- Bloc erreur --- */
+.login-error {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.75rem 0.85rem;
+    background: #fadadf;
+    border-left: 3px solid #c8102e;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: #8f0c21;
+    margin-bottom: 1rem;
+}
+
+.login-error svg {
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+/* --- Lien mot de passe oublié --- */
+.login-forgot {
+    display: block;
+    text-align: right;
+    font-size: 0.8rem;
+    color: #de7c0f;
+    text-decoration: none;
+    margin-top: -0.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+    transition: color 0.15s ease;
+}
+
+.login-forgot:hover {
+    color: #c26c0b;
+    text-decoration: underline;
+}
+
+/* --- Bouton principal --- */
+.login-submit {
+    display: block;
+    width: 100%;
+    padding: 0.85rem;
+    border: 0;
+    border-radius: 10px;
+    background: #27357e;
+    color: #ffffff;
+    font-family: 'Poppins', 'Inter', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    margin-top: 0.5rem;
+}
+
+.login-submit:hover:not(:disabled) {
+    background: #1d2865;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(39, 53, 126, 0.25);
+}
+
+.login-submit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* --- Indice sous le formulaire --- */
+.login-hint {
+    font-size: 0.75rem;
+    color: #6b7190;
+    margin-top: 0.75rem;
+    line-height: 1.4;
+}
+
+/* --- Footer --- */
+.login-footer {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #6b7190;
+    margin-top: 1.75rem;
+}
+
+/* --- Responsive --- */
+@media (max-width: 480px) {
+    .login-card {
+        padding: 1.5rem 1.25rem;
+        border-radius: 14px;
+    }
+    .login-blob--orange { width: 160px; height: 160px; }
+    .login-blob--green  { width: 140px; height: 140px; }
+    .login-blob--yellow { width: 80px;  height: 80px;  }
+}

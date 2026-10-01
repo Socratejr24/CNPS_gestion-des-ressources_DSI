@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', fn () => redirect('/login'));
+
+Route::get('/login', fn () => view('auth.login'))->name('login');
+Route::get('/dashboard', fn () => view('dashboard.index'))->name('dashboard');

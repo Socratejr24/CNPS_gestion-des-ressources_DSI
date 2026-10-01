@@ -1,0 +1,1219 @@
+/* ============================================
+   Layout principal — Application connectée
+   ============================================ */
+
+[x-cloak] { display: none !important; }
+
+/* --- Structure globale --- */
+.app-shell {
+    display: flex;
+    min-height: calc(100vh - 6px);
+    background: #f5f6fa;
+}
+
+/* ============================================
+   SIDEBAR
+   ============================================ */
+.app-sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    background: #27357e;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: calc(100vh - 6px);
+    overflow: hidden;
+    transition: width 0.25s ease;
+    z-index: 30;
+}
+
+.app-sidebar--collapsed { width: 72px; }
+
+.app-sidebar--collapsed .app-sidebar__brand-text,
+.app-sidebar--collapsed .app-sidebar__section-label,
+.app-sidebar--collapsed .app-sidebar__sub-label,
+.app-sidebar--collapsed .app-sidebar__label,
+.app-sidebar--collapsed .app-sidebar__badge,
+.app-sidebar--collapsed .app-sidebar__user-info {
+    display: none;
+}
+
+.app-sidebar--collapsed .app-sidebar__header {
+    justify-content: center;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+.app-sidebar--collapsed .app-sidebar__link {
+    justify-content: center;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+
+.app-sidebar--collapsed .app-sidebar__user {
+    justify-content: center;
+}
+
+/* --- En-tête (logo + texte) --- */
+.app-sidebar__header {
+    padding: 1.25rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 80px;
+    flex-shrink: 0;
+}
+
+.app-sidebar__logo {
+    height: 42px;
+    width: 42px;
+    object-fit: contain;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2px;
+}
+
+.app-sidebar__brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+    overflow: hidden;
+}
+
+.app-sidebar__brand-title {
+    font-family: 'Poppins', 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #ffffff;
+    white-space: nowrap;
+}
+
+.app-sidebar__brand-sub {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.65);
+    margin-top: 2px;
+    white-space: nowrap;
+}
+
+/* --- Navigation (scrollable) --- */
+.app-sidebar__nav {
+    flex: 1;
+    padding: 0.75rem 0.75rem 1rem;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.app-sidebar__nav::-webkit-scrollbar { width: 4px; }
+.app-sidebar__nav::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 2px;
+}
+
+/* --- SECTION PRINCIPALE (PRINCIPAL, TRAITEMENT, ADMINISTRATION) --- */
+.app-sidebar__section {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.app-sidebar__section:first-child {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+}
+
+.app-sidebar__section-label {
+    font-family: 'Poppins', 'Inter', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 0 0.75rem 0.5rem;
+    white-space: nowrap;
+}
+
+/* --- SOUS-SECTION (ACCUEIL, DEMANDES, RESSOURCES, etc.) --- */
+.app-sidebar__sub {
+    margin-top: 0.5rem;
+}
+
+.app-sidebar__sub-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.35);
+    padding: 0.5rem 0.75rem 0.3rem;
+    white-space: nowrap;
+}
+
+/* --- Liens --- */
+.app-sidebar__link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.15s ease;
+    position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-bottom: 0.1rem;
+}
+
+.app-sidebar__link:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+}
+
+.app-sidebar__link--active {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.app-sidebar__link--active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 60%;
+    background: #de7c0f;
+    border-radius: 0 3px 3px 0;
+}
+
+/* --- Icône Font Awesome --- */
+.app-sidebar__icon {
+    width: 18px;
+    min-width: 18px;
+    font-size: 0.95rem;
+    text-align: center;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.app-sidebar__label {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* --- Badge nombre (ex: "3") --- */
+.app-sidebar__badge {
+    background: #de7c0f;
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 0.15rem 0.45rem;
+    border-radius: 99px;
+    min-width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+    line-height: 1.3;
+}
+
+/* --- Badge pastille (petit point) --- */
+.app-sidebar__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #de7c0f;
+    flex-shrink: 0;
+    margin-left: auto;
+    box-shadow: 0 0 0 2px #27357e;
+    animation: sidebar-dot-pulse 2s ease-in-out infinite;
+}
+
+@keyframes sidebar-dot-pulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.2); }
+}
+
+/* --- Bloc utilisateur en bas --- */
+.app-sidebar__footer {
+    padding: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.10);
+    flex-shrink: 0;
+}
+
+.app-sidebar__user {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 10px;
+}
+
+.app-sidebar__avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #ffffff;
+    flex-shrink: 0;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.app-sidebar__user-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+    overflow: hidden;
+    flex: 1;
+}
+
+.app-sidebar__user-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.app-sidebar__user-role {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.65);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ============================================
+   ZONE PRINCIPALE
+   ============================================ */
+.app-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+/* ============================================
+   TOPBAR
+   ============================================ */
+.app-topbar {
+    background: #ffffff;
+    border-bottom: 1px solid #e2e5f0;
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    min-height: 64px;
+}
+
+.app-topbar__left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-width: 0;
+    flex: 1;
+}
+
+/* --- Burger animé --- */
+.app-burger {
+    width: 40px;
+    height: 40px;
+    border: 0;
+    background: transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease;
+    flex-shrink: 0;
+    padding: 0;
+}
+
+.app-burger:hover { background: #f5f6fa; }
+
+.app-burger__box {
+    width: 22px;
+    height: 16px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.app-burger__line {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: #27357e;
+    border-radius: 2px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.2s ease,
+                width 0.3s ease;
+    transform-origin: center;
+}
+
+.app-burger__line--short {
+    width: 60%;
+    align-self: flex-end;
+}
+
+.app-burger--open .app-burger__line:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.app-burger--open .app-burger__line:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+}
+
+.app-burger--open .app-burger__line:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+    width: 100%;
+}
+
+.app-topbar__title {
+    font-family: 'Poppins', 'Inter', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1b2140;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.app-topbar__right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+/* --- Bouton cloche --- */
+.app-topbar__icon-btn {
+    position: relative;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    border-radius: 10px;
+    color: #6b7190;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    width: 40px;
+    height: 40px;
+}
+
+.app-topbar__icon-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.app-topbar__icon-btn:hover {
+    background: #f5f6fa;
+    color: #27357e;
+}
+
+.app-topbar__icon-btn--active {
+    background: #f5f6fa;
+    color: #27357e;
+}
+
+/* --- Badge nombre (positionné en haut à droite, plus petit) --- */
+/* --- Pastille discrète de notification --- */
+.app-topbar__notif-dot {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #de7c0f;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 0 0 rgba(222, 124, 15, 0.7);
+    animation: notif-halo 2s infinite;
+    pointer-events: none;
+}
+
+@keyframes notif-halo {
+    0% {
+        box-shadow: 0 0 0 0 rgba(222, 124, 15, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 8px rgba(222, 124, 15, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(222, 124, 15, 0);
+    }
+}
+
+/* --- Animation de pulsation douce --- */
+@keyframes notif-pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 1px 3px rgba(222, 124, 15, 0.4);
+    }
+    50% {
+        transform: scale(1.15);
+        box-shadow: 0 1px 6px rgba(222, 124, 15, 0.6);
+    }
+}
+
+
+/* --- Bloc avatar utilisateur --- */
+.app-topbar__user-wrap {
+    position: relative;
+}
+
+.app-topbar__user {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.35rem 0.75rem 0.35rem 0.35rem;
+    border-radius: 99px;
+    border: 1px solid transparent;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: inherit;
+}
+
+.app-topbar__user:hover,
+.app-topbar__user--active {
+    background: #f5f6fa;
+    border-color: #e2e5f0;
+}
+
+.app-topbar__user-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #27357e, #3d4a99);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    overflow: hidden;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 0 1px #e2e5f0;
+}
+
+.app-topbar__user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.app-topbar__user-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+    text-align: left;
+}
+
+.app-topbar__user-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1b2140;
+    white-space: nowrap;
+}
+
+.app-topbar__user-role {
+    font-size: 0.7rem;
+    color: #6b7190;
+    white-space: nowrap;
+}
+
+.app-topbar__user-chevron {
+    width: 16px;
+    height: 16px;
+    color: #6b7190;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.app-topbar__user--active .app-topbar__user-chevron {
+    transform: rotate(180deg);
+}
+
+/* ============================================
+   MENU UTILISATEUR (pop-up)
+   ============================================ */
+.app-user-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 240px;
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 12px 40px rgba(39, 53, 126, 0.18),
+                0 0 0 1px rgba(226, 229, 240, 0.9);
+    padding: 0.5rem;
+    z-index: 60;
+    animation: menu-in 0.15s ease-out;
+}
+
+@keyframes menu-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.app-user-menu__header {
+    padding: 0.75rem 0.85rem;
+    border-bottom: 1px solid #e2e5f0;
+    margin-bottom: 0.35rem;
+}
+
+.app-user-menu__name {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #1b2140;
+}
+
+.app-user-menu__roles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin-top: 0.4rem;
+}
+
+.app-user-menu__role-badge {
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    background: #e8ecf8;
+    color: #27357e;
+}
+
+.app-user-menu__link {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.6rem 0.85rem;
+    border-radius: 8px;
+    color: #1b2140;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: background 0.15s ease;
+    border: 0;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.app-user-menu__link svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.app-user-menu__link:hover { background: #f5f6fa; }
+
+.app-user-menu__separator {
+    height: 1px;
+    background: #e2e5f0;
+    margin: 0.35rem 0.5rem;
+}
+
+.app-user-menu__link--danger { color: #c8102e; }
+.app-user-menu__link--danger:hover { background: #fadadf; }
+
+/* ============================================
+   DRAWERS
+   ============================================ */
+.app-drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 19, 48, 0.45);
+    z-index: 90;
+    animation: overlay-in 0.2s ease-out;
+}
+
+@keyframes overlay-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.app-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 420px;
+    background: #ffffff;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -8px 0 40px rgba(39, 53, 126, 0.20);
+    animation: drawer-in 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@keyframes drawer-in {
+    from { transform: translateX(100%); }
+    to   { transform: translateX(0); }
+}
+
+.app-drawer__header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #e2e5f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-shrink: 0;
+}
+
+.app-drawer__title {
+    font-family: 'Poppins', 'Inter', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1b2140;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.app-drawer__title svg {
+    width: 20px;
+    height: 20px;
+}
+
+.app-drawer__close {
+    width: 36px;
+    height: 36px;
+    border: 0;
+    background: transparent;
+    border-radius: 8px;
+    color: #6b7190;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+}
+
+.app-drawer__close:hover {
+    background: #f5f6fa;
+    color: #1b2140;
+}
+
+.app-drawer__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 1.5rem 1.5rem;
+}
+
+.app-drawer__footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e2e5f0;
+    flex-shrink: 0;
+}
+
+/* --- Notifications --- */
+.notif-item {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.85rem 0.75rem;
+    border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s ease;
+    margin-bottom: 0.25rem;
+    position: relative;
+}
+
+.notif-item:hover { background: #f5f6fa; }
+
+.notif-item--unread { background: #f8f9ff; }
+
+.notif-item--unread::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 60%;
+    background: #27357e;
+    border-radius: 0 3px 3px 0;
+}
+
+.notif-item__icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.notif-item__icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.notif-item__icon--blue   { background: #e6eaf7; color: #27357e; }
+.notif-item__icon--orange { background: #fdf0e1; color: #de7c0f; }
+.notif-item__icon--green  { background: #e0f2e7; color: #088e39; }
+.notif-item__icon--red    { background: #fadadf; color: #c8102e; }
+
+.notif-item__content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notif-item__title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1b2140;
+    margin: 0 0 0.15rem;
+    line-height: 1.3;
+}
+
+.notif-item__time {
+    font-size: 0.75rem;
+    color: #6b7190;
+}
+
+.app-drawer__see-all {
+    display: block;
+    text-align: center;
+    padding: 0.75rem;
+    color: #27357e;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background 0.15s ease;
+}
+
+.app-drawer__see-all:hover { background: #f5f6fa; }
+
+/* --- Profil --- */
+.profile-hero {
+    text-align: center;
+    padding: 1rem 0 1.5rem;
+    border-bottom: 1px solid #e2e5f0;
+    margin-bottom: 1.5rem;
+}
+
+.profile-hero__avatar {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #27357e, #3d4a99);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 2rem;
+    margin: 0 auto 1rem;
+    border: 4px solid #ffffff;
+    box-shadow: 0 4px 20px rgba(39, 53, 126, 0.20);
+    overflow: hidden;
+}
+
+.profile-hero__name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #1b2140;
+    margin: 0 0 0.35rem;
+}
+
+.profile-hero__roles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    justify-content: center;
+}
+
+.profile-hero__role-badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    border-radius: 99px;
+    background: #e8ecf8;
+    color: #27357e;
+}
+
+.profile-section { margin-bottom: 1.5rem; }
+
+.profile-section__title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6b7190;
+    margin: 0 0 0.75rem;
+}
+
+.profile-info-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid #f0f1f8;
+    font-size: 0.85rem;
+}
+
+.profile-info-row:last-child { border-bottom: 0; }
+
+.profile-info-row__label {
+    color: #6b7190;
+    flex-shrink: 0;
+}
+
+.profile-info-row__value {
+    color: #1b2140;
+    font-weight: 500;
+    text-align: right;
+    word-break: break-word;
+}
+
+/* --- Paramètres --- */
+.settings-group { margin-bottom: 1.75rem; }
+
+.settings-group__title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6b7190;
+    margin: 0 0 0.85rem;
+}
+
+.settings-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f0f1f8;
+}
+
+.settings-toggle:last-child { border-bottom: 0; }
+
+.settings-toggle__label {
+    font-size: 0.875rem;
+    color: #1b2140;
+    font-weight: 500;
+}
+
+.settings-toggle__hint {
+    font-size: 0.75rem;
+    color: #6b7190;
+    margin-top: 2px;
+}
+
+.settings-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.settings-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.settings-switch__slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background: #cfd3e6;
+    border-radius: 24px;
+    transition: 0.25s;
+}
+
+.settings-switch__slider::before {
+    content: '';
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background: #ffffff;
+    border-radius: 50%;
+    transition: 0.25s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.settings-switch input:checked + .settings-switch__slider { background: #27357e; }
+.settings-switch input:checked + .settings-switch__slider::before { transform: translateX(20px); }
+
+.settings-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f0f1f8;
+    font-size: 0.875rem;
+    color: #1b2140;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.15s ease;
+    cursor: pointer;
+}
+
+.settings-link:hover { color: #27357e; }
+.settings-link svg { width: 16px; height: 16px; color: #6b7190; }
+
+/* ============================================
+   MODAL (déconnexion)
+   ============================================ */
+.app-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 19, 48, 0.55);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    animation: overlay-in 0.2s ease-out;
+}
+
+.app-modal {
+    background: #ffffff;
+    border-radius: 16px;
+    max-width: 420px;
+    width: 100%;
+    padding: 2rem;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.30);
+    animation: modal-in 0.22s cubic-bezier(0.32, 0.72, 0, 1);
+    text-align: center;
+}
+
+@keyframes modal-in {
+    from { opacity: 0; transform: scale(0.95) translateY(8px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.app-modal__icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #fadadf;
+    color: #c8102e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.25rem;
+}
+
+.app-modal__icon svg { width: 32px; height: 32px; }
+
+.app-modal__title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #1b2140;
+    margin: 0 0 0.5rem;
+}
+
+.app-modal__text {
+    font-size: 0.9rem;
+    color: #6b7190;
+    margin: 0 0 1.75rem;
+    line-height: 1.5;
+}
+
+.app-modal__actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+}
+
+.app-modal__btn {
+    padding: 0.7rem 1.4rem;
+    border-radius: 10px;
+    font-family: 'Poppins', 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: 1px solid transparent;
+    flex: 1;
+    max-width: 180px;
+}
+
+.app-modal__btn--ghost {
+    background: #f5f6fa;
+    color: #1b2140;
+    border-color: #e2e5f0;
+}
+
+.app-modal__btn--ghost:hover { background: #eceef7; }
+
+.app-modal__btn--danger {
+    background: #c8102e;
+    color: #ffffff;
+}
+
+.app-modal__btn--danger:hover { background: #a80d26; }
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.app-footer {
+    border-top: 1px solid #e2e5f0;
+    padding: 1rem 2rem;
+    background: #ffffff;
+    font-size: 0.75rem;
+    color: #6b7190;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.app-footer__version {
+    font-family: 'Inter', monospace;
+    font-size: 0.7rem;
+    padding: 0.15rem 0.4rem;
+    background: #f5f6fa;
+    border-radius: 4px;
+}
+
+/* ============================================
+   LOADER
+   ============================================ */
+.app-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: transparent;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.app-loader--active { opacity: 1; }
+
+.app-loader__bar {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #27357e, #de7c0f, #088e39, #f6d01d);
+    background-size: 200% 100%;
+    animation: loader-progress 1.5s ease-in-out infinite,
+               loader-gradient 3s linear infinite;
+}
+
+@keyframes loader-progress {
+    0%   { width: 0%; }
+    20%  { width: 30%; }
+    50%  { width: 60%; }
+    80%  { width: 85%; }
+    100% { width: 95%; }
+}
+
+@keyframes loader-gradient {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+.app-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 19, 48, 0.5);
+    z-index: 25;
+}
+
+@media (max-width: 1024px) {
+    .app-sidebar {
+        position: fixed;
+        left: 0;
+        top: 6px;
+        bottom: 0;
+        height: auto;
+        transform: translateX(0);
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .app-sidebar--hidden-mobile { transform: translateX(-100%); }
+    .app-sidebar--collapsed { width: 260px; }
+
+    .app-sidebar--collapsed .app-sidebar__brand-text,
+    .app-sidebar--collapsed .app-sidebar__section,
+    .app-sidebar--collapsed .app-sidebar__label,
+    .app-sidebar--collapsed .app-sidebar__badge,
+    .app-sidebar--collapsed .app-sidebar__user-info {
+        display: flex;
+    }
+
+    .app-sidebar--collapsed .app-sidebar__label,
+    .app-sidebar--collapsed .app-sidebar__badge {
+        display: inline;
+    }
+
+    .app-sidebar--collapsed .app-sidebar__link,
+    .app-sidebar--collapsed .app-sidebar__user {
+        justify-content: flex-start;
+    }
+
+    .app-overlay--visible { display: block; }
+
+    .app-content { padding: 1.25rem 1rem; }
+    .app-footer { padding: 0.85rem 1rem; }
+}
+
+@media (max-width: 640px) {
+    .app-topbar { padding: 0.75rem 1rem; }
+    .app-topbar__title { font-size: 0.95rem; }
+    .app-topbar__user-text { display: none; }
+    .app-topbar__user { padding: 0.35rem; }
+    .app-drawer { max-width: 100%; }
+    .app-user-menu { width: 220px; }
+}
