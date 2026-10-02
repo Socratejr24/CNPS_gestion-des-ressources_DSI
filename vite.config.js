@@ -16,6 +16,11 @@ export default defineConfig({
                 // Auth
                 'resources/css/auth/login.css',
 
+                
+                // Dashboard
+                'resources/css/dashboard/index.css',
+                'resources/js/dashboard/charts.js',
+
                 // Composants
                 'resources/css/components/buttons.css',
                 'resources/css/components/forms.css',

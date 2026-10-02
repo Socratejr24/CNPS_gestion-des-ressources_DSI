@@ -56,8 +56,19 @@
         'server'        => '<rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>',
         'database'      => '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>',
         'globe'         => '<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+        'archive'       => '<polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/>',
     ];
 
+    // Dimensions en pixels selon la taille
+    $sizes = [
+        'xs' => 14,
+        'sm' => 16,
+        'md' => 20,
+        'lg' => 24,
+        'xl' => 32,
+    ];
+
+    $px = $sizes[$size] ?? 20;
     $svgContent = $icons[$name] ?? $icons['home'];
     $classes = 'icon icon--' . $size . ($color ? ' icon--' . $color : '');
 @endphp
@@ -66,7 +77,10 @@
      viewBox="0 0 24 24"
      fill="none"
      stroke="currentColor"
+     width="{{ $px }}"
+     height="{{ $px }}"
      class="{{ $classes }}"
+     style="width: {{ $px }}px; height: {{ $px }}px; flex-shrink: 0;"
      {{ $attributes }}>
     {!! $svgContent !!}
 </svg>

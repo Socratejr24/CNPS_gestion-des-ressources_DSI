@@ -61,26 +61,25 @@ export function registerLoginForm() {
 
                 try {
                     // ⚠️ BACKEND À BRANCHER PLUS TARD
-                    // Pour l'instant, on simule un délai puis on teste
-                    // les identifiants en dur.
-                    await new Promise(r => setTimeout(r, 600));
+                    // Simulation d'un délai réseau (1.2s)
+                    await new Promise(r => setTimeout(r, 1200));
 
                     const result = this.attemptLogin(payload);
 
                     if (!result.success) {
                         this.errorMessage = result.message;
+                        this.loading = false;
                     } else {
-                        console.log('✅ Connexion réussie :', result.user);
-                        // TODO: rediriger vers le dashboard
+                        console.log(' Connexion réussie :', result.user);
+                        //  Redirection vers le dashboard
+                        window.location.href = '/dashboard';
                     }
                 } catch (e) {
                     this.errorMessage = "Une erreur est survenue. Veuillez réessayer.";
                     console.error(e);
-                } finally {
                     this.loading = false;
                 }
             },
-
             /**
              *  Comptes de test en dur — à remplacer par un appel API
              * quand on aura branché le backend.
@@ -88,7 +87,7 @@ export function registerLoginForm() {
             attemptLogin({ mode, identifiant, password }) {
                 const comptesTest = {
                     agent: [
-                        { identifiant: '123456', password: 'agent123', nom: 'Kouassi A.' },
+                        { identifiant: 'm2005', password: 'agent', nom: 'DYLANE ACKADIE' },
                         { identifiant: '654321', password: 'agent123', nom: 'Diallo M.' },
                     ],
                     prestataire: [

@@ -3,34 +3,52 @@
 @section('title', 'Tableau de bord')
 @section('page-title', 'Tableau de bord')
 
+@push('styles')
+    @vite('resources/css/dashboard/index.css')
+@endpush
+
 @section('content')
 
-    <div class="p-6 bg-white rounded-xl border border-cnps-border mb-6">
-        <h2 class="text-xl font-heading font-semibold text-cnps-blue mb-2">
-            Bienvenue dans votre espace
-        </h2>
-        <p class="text-cnps-muted">
-            Maquette de validation — le contenu réel sera implémenté après validation.
-        </p>
+<div class="dashboard" x-data="dashboardPage()">
+
+    {{-- Bandeau de bienvenue --}}
+    @include('dashboard.partials.welcome', ['user' => $user])
+
+    {{-- KPI --}}
+    @include('dashboard.partials.kpis', ['kpis' => $kpis])
+
+    {{-- Graphiques --}}
+    @include('dashboard.partials.charts', [
+        'chartStatuts' => $chartStatuts,
+        'chartEvolution' => $chartEvolution,
+        'chartTopRessources' => $chartTopRessources,
+    ])
+
+    {{-- Actions rapides --}}
+    @include('dashboard.partials.quick-actions', ['quickActions' => $quickActions])
+
+    {{-- Listes --}}
+    <div class="dash-lists-grid">
+        @include('dashboard.partials.recent-demandes', ['recentesDemandes' => $recentesDemandes])
+        @include('dashboard.partials.recent-notifs', ['recentesNotifs' => $recentesNotifs])
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="p-5 bg-white rounded-xl border border-cnps-border">
-            <div class="text-sm text-cnps-muted mb-1">Demandes en cours</div>
-            <div class="text-2xl font-heading font-bold text-cnps-blue">0</div>
-        </div>
-        <div class="p-5 bg-white rounded-xl border border-cnps-border">
-            <div class="text-sm text-cnps-muted mb-1">En attente</div>
-            <div class="text-2xl font-heading font-bold text-cnps-orange">0</div>
-        </div>
-        <div class="p-5 bg-white rounded-xl border border-cnps-border">
-            <div class="text-sm text-cnps-muted mb-1">Validées</div>
-            <div class="text-2xl font-heading font-bold text-cnps-green">0</div>
-        </div>
-        <div class="p-5 bg-white rounded-xl border border-cnps-border">
-            <div class="text-sm text-cnps-muted mb-1">Clôturées</div>
-            <div class="text-2xl font-heading font-bold text-cnps-text">0</div>
-        </div>
-    </div>
+    {{-- Bandeau info circuit --}}
+    @include('dashboard.partials.circuit-info')
+
+</div>
 
 @endsection
+
+@push('scripts')
+    {{-- Données pour ApexCharts --}}
+    <script>
+        window.dashboardData = {
+            statuts: @json($chartStatuts),
+            evolution: @json($chartEvolution),
+            topRessources: @json($chartTopRessources),
+        };
+    </script>
+
+    @vite('resources/js/dashboard/charts.js')
+@endpush

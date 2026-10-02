@@ -2,19 +2,13 @@
 
 /**
  * Helper de permissions — PLACEHOLDER.
- *
- * ⚠️ Ce helper sera remplacé par le vrai système de permissions
- * (Spatie Permission ou custom) quand on branchera l'authentification.
- *
- * Pour l'instant, il retourne TOUJOURS true afin de pouvoir
- * visualiser toutes les sections de la sidebar pendant la phase maquette.
+ * ⚠️ Sera remplacé par le vrai système (Spatie) quand on branchera l'auth.
  */
 
 if (! function_exists('user_can')) {
     function user_can(string $permission): bool
     {
         // TODO: brancher le vrai système de permissions
-        // Pour l'instant, on simule les permissions pour tester la sidebar
         return true;
     }
 }
@@ -26,14 +20,17 @@ if (! function_exists('current_user')) {
      */
     function current_user(): ?object
     {
-        // Utilisateur factice pour tester le layout
         return (object) [
-            'nom'      => 'Kouassi',
-            'prenom'   => 'A.',
-            'initiales'=> 'KA',
-            'matricule'=> '123456890',
-            'roles'    => ['Demandeur', 'Receveur'],
-            'email'    => 'kouassi.a@cnps.ci',
+            'nom'       => 'Adou',
+            'prenom'    => 'Kouassi',
+            'initiales' => 'KA',
+            'matricule' => '104582',
+            'email'     => 'kouassi.adou@cnps.ci',
+            'fonction'  => 'Développeur',
+            'structure' => 'DSI',
+            'departement' => 'DEV',
+            'service'     => 'Développement IT',
+            'roles'     => ['Demandeur', 'Receveur'],
         ];
     }
 }

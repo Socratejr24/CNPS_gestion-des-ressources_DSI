@@ -297,3 +297,27 @@
     .login-blob--green  { width: 140px; height: 140px; }
     .login-blob--yellow { width: 80px;  height: 80px;  }
 }
+
+
+/* --- Spinner dans le bouton --- */
+.login-submit {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.login-submit__spinner {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: #ffffff;
+    animation: login-spinner 0.7s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes login-spinner {
+    to { transform: rotate(360deg); }
+}

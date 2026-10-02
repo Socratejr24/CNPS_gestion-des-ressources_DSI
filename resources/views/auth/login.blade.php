@@ -125,13 +125,17 @@
             {{-- Indice --}}
             <p class="login-hint" x-text="hint"></p>
 
-            {{-- Bouton submit --}}
-            <button type="submit"
-                    class="login-submit"
-                    :disabled="loading">
-                <span x-show="!loading">Se connecter</span>
-                <span x-show="loading">Connexion en cours...</span>
-            </button>
+           {{-- Bouton submit --}}
+<button type="submit"
+        class="login-submit"
+        :disabled="loading">
+
+    {{-- Spinner --}}
+    <span x-show="loading" class="login-submit__spinner"></span>
+
+    {{-- Texte --}}
+    <span x-text="loading ? 'Connexion en cours...' : 'Se connecter'"></span>
+</button>
 
         </form>
 
