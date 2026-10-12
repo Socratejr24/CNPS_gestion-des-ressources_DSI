@@ -12,6 +12,7 @@ export default defineConfig({
 
                 // Layouts
                 'resources/css/layouts/app.css',
+                 'resources/css/layouts/sidebar.css',
 
                 // Auth
                 'resources/css/auth/login.css',
