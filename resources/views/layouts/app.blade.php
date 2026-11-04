@@ -4,6 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    {{-- Favicon CNPS --}}
+    <link rel="icon" type="image/jpeg" href="{{ asset('images/logo-cnps.jpeg') }}?v=3">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo-cnps.jpeg') }}?v=3">
+
     <title>@yield('title', 'Tableau de bord') — Gestion des ressources DSI · CNPS</title>
 
     @vite([
@@ -44,7 +49,7 @@
         <div class="app-main">
 
             {{-- Topbar --}}
-           @include('layouts.partials.topbar', ['pageTitle' => View::getSection('page-title') ?: 'Tableau de bord'])
+            @include('layouts.partials.topbar', ['pageTitle' => View::getSection('page-title') ?: 'Tableau de bord'])
 
             {{-- Contenu --}}
             <main class="app-content">
@@ -64,11 +69,23 @@
         {{-- Modal déconnexion --}}
         @include('layouts.partials.logout-modal')
 
-           {{-- Container des toasts (global) --}}
+        {{-- Container des toasts (global) --}}
         <x-toast-container />
     </div>
-    
 
     @stack('scripts')
+
+    {{-- Détection hors-connexion --}}
+    <!-- <script>
+      {{-- Détection offline (fetch) --}}
+    <script src="{{ asset('js/offline-detector.js') }}"></script>
+
+    {{-- Détection offline (navigator, en complément) --}}
+    <script>
+        window.addEventListener('offline', () => {
+            window.location.href = '/offline.html';
+        });
+    </script> -->
+
 </body>
 </html>

@@ -4,7 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+<!-- {{-- Favicon CNPS --}} -->
+<!-- <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+<link rel="apple-touch-icon" href="{{ asset('favicon.png') }}"> -->
+{{-- Favicon CNPS --}}
+<link rel="icon" type="image/jpeg" href="{{ asset('images/logo-cnps.jpeg') }}?v=3">
+<link rel="apple-touch-icon" href="{{ asset('images/logo-cnps.jpeg') }}?v=3">
     <title>@yield('title', 'Connexion') — Gestion des ressources DSI · CNPS</title>
+    
 
     @vite([
         'resources/css/app.css',
@@ -13,6 +20,7 @@
 
     @stack('styles')
 </head>
+
 <body class="min-h-screen">
 
     {{-- Bandeau quadricolore --}}
@@ -23,8 +31,31 @@
         <span class="flex-1 bg-cnps-yellow"></span>
     </div>
 
-    @yield('content')
 
+        window.addEventListener('offline', () => {
+        window.location.href = '/offline.html';
+    });
+
+    if (!navigator.onLine) {
+        window.location.href = '/offline.html';
+    }
+
+    @yield('content')
     @stack('scripts')
+
+
+        {{-- Détection hors-connexion --}}
+    <script>
+     {{-- Détection offline (fetch) --}}
+    <script src="{{ asset('js/offline-detector.js') }}"></script>
+
+    {{-- Détection offline (navigator, en complément) --}}
+    <script>
+        window.addEventListener('offline', () => {
+            window.location.href = '/offline.html';
+        });
+    </script>
+
 </body>
+
 </html>
