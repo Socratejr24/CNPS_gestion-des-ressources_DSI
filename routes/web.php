@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DemandeController;
 
 Route::get('/', fn () => redirect('/login'));
 
@@ -16,3 +17,5 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 Route::get('/up', function () {
     return response()->json(['status' => 'ok'], 200);
 });
+
+Route::get('/demandes/mes-demandes', [DemandeController::class, 'index'])->name('demandes.index');

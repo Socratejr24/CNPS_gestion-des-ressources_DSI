@@ -22,8 +22,8 @@ export default defineConfig({
                 'resources/css/dashboard/index.css',
                 'resources/js/dashboard/charts.js',
 
-            // Erreurs
-            //  'resources/css/errors/error.css', 
+             // Demandes ← NOUVEAU
+    'resources/css/demandes/index.css',
 
 
                 // Composants
