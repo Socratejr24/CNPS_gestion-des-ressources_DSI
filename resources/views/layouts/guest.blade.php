@@ -1,9 +1,26 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+  <script>
+        // Initialisation du thème AVANT le rendu (évite le flash)
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+
+
+
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    {{-- Favicon CNPS --}}
+    <link rel="icon" type="image/jpeg" href="{{ asset('images/logo-cnps.jpeg') }}?v=3">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo-cnps.jpeg') }}?v=3">
+
     <title>@yield('title', 'Connexion') — Gestion des ressources DSI · CNPS</title>
 
     @vite([
@@ -26,5 +43,17 @@
     @yield('content')
 
     @stack('scripts')
+
+    {{-- Détection hors-connexion --}}
+    <script>
+        window.addEventListener('offline', () => {
+            window.location.href = '/offline.html';
+        });
+
+        if (!navigator.onLine) {
+            window.location.href = '/offline.html';
+        }
+    </script>
+
 </body>
 </html>

@@ -1,0 +1,29 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('roles_permissions', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');
+            $table->foreignId('permission_id')->constrained('permissions')->onDelete('cascade');
+            
+            // $table->foreignId('cree_par')->nullable()->constrained('utilisateurs');
+            // $table->foreignId('modifie_par')->nullable()->constrained('utilisateurs');
+            // $table->foreignId('supprime_par')->nullable()->constrained('utilisateurs');
+            
+            $table->timestamps();
+            $table->timestamp('supprime_le')->nullable();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('roles_permissions');
+    }
+};

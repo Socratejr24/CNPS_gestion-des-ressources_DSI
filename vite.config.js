@@ -22,6 +22,10 @@ export default defineConfig({
                 'resources/css/dashboard/index.css',
                 'resources/js/dashboard/charts.js',
 
+             // Demandes ← NOUVEAU
+    'resources/css/demandes/index.css',
+
+
                 // Composants
                 'resources/css/components/buttons.css',
                 'resources/css/components/forms.css',
