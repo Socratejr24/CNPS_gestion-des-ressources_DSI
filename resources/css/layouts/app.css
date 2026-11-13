@@ -1,6 +1,5 @@
 /* ============================================
    Layout principal — Application connectée
-   (Hors sidebar → voir layouts/sidebar.css)
    ============================================ */
 
 [x-cloak] { display: none !important; }
@@ -62,7 +61,6 @@
     flex-shrink: 0;
     padding: 0;
 }
-
 .app-burger:hover { background: #f5f6fa; }
 
 .app-burger__box {
@@ -85,21 +83,17 @@
                 width 0.3s ease;
     transform-origin: center;
 }
-
 .app-burger__line--short {
     width: 60%;
     align-self: flex-end;
 }
-
 .app-burger--open .app-burger__line:nth-child(1) {
     transform: translateY(7px) rotate(45deg);
 }
-
 .app-burger--open .app-burger__line:nth-child(2) {
     opacity: 0;
     transform: scaleX(0);
 }
-
 .app-burger--open .app-burger__line:nth-child(3) {
     transform: translateY(-7px) rotate(-45deg);
     width: 100%;
@@ -139,17 +133,8 @@
     width: 40px;
     height: 40px;
 }
-
-.app-topbar__icon-btn svg {
-    width: 20px;
-    height: 20px;
-}
-
-.app-topbar__icon-btn:hover {
-    background: #f5f6fa;
-    color: #27357e;
-}
-
+.app-topbar__icon-btn svg { width: 20px; height: 20px; }
+.app-topbar__icon-btn:hover,
 .app-topbar__icon-btn--active {
     background: #f5f6fa;
     color: #27357e;
@@ -169,17 +154,14 @@
     animation: notif-halo 2s infinite;
     pointer-events: none;
 }
-
 @keyframes notif-halo {
-    0% { box-shadow: 0 0 0 0 rgba(222, 124, 15, 0.7); }
-    70% { box-shadow: 0 0 0 8px rgba(222, 124, 15, 0); }
+    0%   { box-shadow: 0 0 0 0 rgba(222, 124, 15, 0.7); }
+    70%  { box-shadow: 0 0 0 8px rgba(222, 124, 15, 0); }
     100% { box-shadow: 0 0 0 0 rgba(222, 124, 15, 0); }
 }
 
 /* --- Bloc avatar utilisateur --- */
-.app-topbar__user-wrap {
-    position: relative;
-}
+.app-topbar__user-wrap { position: relative; }
 
 .app-topbar__user {
     display: flex;
@@ -193,7 +175,6 @@
     transition: all 0.15s ease;
     font-family: inherit;
 }
-
 .app-topbar__user:hover,
 .app-topbar__user--active {
     background: #f5f6fa;
@@ -217,7 +198,6 @@
     border: 2px solid #ffffff;
     box-shadow: 0 0 0 1px #e2e5f0;
 }
-
 .app-topbar__user-avatar img {
     width: 100%;
     height: 100%;
@@ -230,20 +210,17 @@
     line-height: 1.15;
     text-align: left;
 }
-
 .app-topbar__user-name {
     font-size: 0.85rem;
     font-weight: 600;
     color: #1b2140;
     white-space: nowrap;
 }
-
 .app-topbar__user-role {
     font-size: 0.7rem;
     color: #6b7190;
     white-space: nowrap;
 }
-
 .app-topbar__user-chevron {
     width: 16px;
     height: 16px;
@@ -251,7 +228,6 @@
     transition: transform 0.2s ease;
     flex-shrink: 0;
 }
-
 .app-topbar__user--active .app-topbar__user-chevron {
     transform: rotate(180deg);
 }
@@ -272,32 +248,27 @@
     z-index: 60;
     animation: menu-in 0.15s ease-out;
 }
-
 @keyframes menu-in {
     from { opacity: 0; transform: translateY(-6px); }
     to   { opacity: 1; transform: translateY(0); }
 }
-
 .app-user-menu__header {
     padding: 0.75rem 0.85rem;
     border-bottom: 1px solid #e2e5f0;
     margin-bottom: 0.35rem;
 }
-
 .app-user-menu__name {
     font-family: 'Poppins', sans-serif;
     font-weight: 600;
     font-size: 0.9rem;
     color: #1b2140;
 }
-
 .app-user-menu__roles {
     display: flex;
     flex-wrap: wrap;
     gap: 0.25rem;
     margin-top: 0.4rem;
 }
-
 .app-user-menu__role-badge {
     font-size: 0.65rem;
     font-weight: 600;
@@ -306,7 +277,6 @@
     background: #e8ecf8;
     color: #27357e;
 }
-
 .app-user-menu__link {
     display: flex;
     align-items: center;
@@ -325,21 +295,17 @@
     cursor: pointer;
     font-family: inherit;
 }
-
 .app-user-menu__link svg {
     width: 16px;
     height: 16px;
     flex-shrink: 0;
 }
-
 .app-user-menu__link:hover { background: #f5f6fa; }
-
 .app-user-menu__separator {
     height: 1px;
     background: #e2e5f0;
     margin: 0.35rem 0.5rem;
 }
-
 .app-user-menu__link--danger { color: #c8102e; }
 .app-user-menu__link--danger:hover { background: #fadadf; }
 
@@ -353,7 +319,6 @@
     z-index: 90;
     animation: overlay-in 0.2s ease-out;
 }
-
 @keyframes overlay-in {
     from { opacity: 0; }
     to   { opacity: 1; }
@@ -373,7 +338,6 @@
     box-shadow: -8px 0 40px rgba(39, 53, 126, 0.20);
     animation: drawer-in 0.28s cubic-bezier(0.32, 0.72, 0, 1);
 }
-
 @keyframes drawer-in {
     from { transform: translateX(100%); }
     to   { transform: translateX(0); }
@@ -388,7 +352,6 @@
     gap: 1rem;
     flex-shrink: 0;
 }
-
 .app-drawer__title {
     font-family: 'Poppins', 'Inter', sans-serif;
     font-size: 1.1rem;
@@ -399,11 +362,7 @@
     align-items: center;
     gap: 0.5rem;
 }
-
-.app-drawer__title svg {
-    width: 20px;
-    height: 20px;
-}
+.app-drawer__title svg { width: 20px; height: 20px; }
 
 .app-drawer__close {
     width: 36px;
@@ -419,7 +378,6 @@
     transition: all 0.15s ease;
     flex-shrink: 0;
 }
-
 .app-drawer__close:hover {
     background: #f5f6fa;
     color: #1b2140;
@@ -449,11 +407,8 @@
     margin-bottom: 0.25rem;
     position: relative;
 }
-
 .notif-item:hover { background: #f5f6fa; }
-
 .notif-item--unread { background: #f8f9ff; }
-
 .notif-item--unread::before {
     content: '';
     position: absolute;
@@ -465,7 +420,6 @@
     background: #27357e;
     border-radius: 0 3px 3px 0;
 }
-
 .notif-item__icon {
     width: 36px;
     height: 36px;
@@ -475,22 +429,13 @@
     justify-content: center;
     flex-shrink: 0;
 }
-
-.notif-item__icon svg {
-    width: 16px;
-    height: 16px;
-}
-
+.notif-item__icon svg { width: 16px; height: 16px; }
 .notif-item__icon--blue   { background: #e6eaf7; color: #27357e; }
 .notif-item__icon--orange { background: #fdf0e1; color: #de7c0f; }
 .notif-item__icon--green  { background: #e0f2e7; color: #088e39; }
 .notif-item__icon--red    { background: #fadadf; color: #c8102e; }
 
-.notif-item__content {
-    flex: 1;
-    min-width: 0;
-}
-
+.notif-item__content { flex: 1; min-width: 0; }
 .notif-item__title {
     font-size: 0.85rem;
     font-weight: 600;
@@ -498,7 +443,6 @@
     margin: 0 0 0.15rem;
     line-height: 1.3;
 }
-
 .notif-item__time {
     font-size: 0.75rem;
     color: #6b7190;
@@ -515,7 +459,6 @@
     border-radius: 8px;
     transition: background 0.15s ease;
 }
-
 .app-drawer__see-all:hover { background: #f5f6fa; }
 
 /* --- Profil --- */
@@ -525,7 +468,6 @@
     border-bottom: 1px solid #e2e5f0;
     margin-bottom: 1.5rem;
 }
-
 .profile-hero__avatar {
     width: 88px;
     height: 88px;
@@ -543,7 +485,6 @@
     box-shadow: 0 4px 20px rgba(39, 53, 126, 0.20);
     overflow: hidden;
 }
-
 .profile-hero__name {
     font-family: 'Poppins', sans-serif;
     font-size: 1.15rem;
@@ -551,14 +492,12 @@
     color: #1b2140;
     margin: 0 0 0.35rem;
 }
-
 .profile-hero__roles {
     display: flex;
     flex-wrap: wrap;
     gap: 0.35rem;
     justify-content: center;
 }
-
 .profile-hero__role-badge {
     font-size: 0.72rem;
     font-weight: 600;
@@ -569,7 +508,6 @@
 }
 
 .profile-section { margin-bottom: 1.5rem; }
-
 .profile-section__title {
     font-size: 0.7rem;
     font-weight: 700;
@@ -578,7 +516,6 @@
     color: #6b7190;
     margin: 0 0 0.75rem;
 }
-
 .profile-info-row {
     display: flex;
     justify-content: space-between;
@@ -587,14 +524,8 @@
     border-bottom: 1px solid #f0f1f8;
     font-size: 0.85rem;
 }
-
 .profile-info-row:last-child { border-bottom: 0; }
-
-.profile-info-row__label {
-    color: #6b7190;
-    flex-shrink: 0;
-}
-
+.profile-info-row__label { color: #6b7190; flex-shrink: 0; }
 .profile-info-row__value {
     color: #1b2140;
     font-weight: 500;
@@ -604,7 +535,6 @@
 
 /* --- Paramètres --- */
 .settings-group { margin-bottom: 1.75rem; }
-
 .settings-group__title {
     font-size: 0.7rem;
     font-weight: 700;
@@ -613,7 +543,6 @@
     color: #6b7190;
     margin: 0 0 0.85rem;
 }
-
 .settings-toggle {
     display: flex;
     align-items: center;
@@ -622,21 +551,17 @@
     padding: 0.75rem 0;
     border-bottom: 1px solid #f0f1f8;
 }
-
 .settings-toggle:last-child { border-bottom: 0; }
-
 .settings-toggle__label {
     font-size: 0.875rem;
     color: #1b2140;
     font-weight: 500;
 }
-
 .settings-toggle__hint {
     font-size: 0.75rem;
     color: #6b7190;
     margin-top: 2px;
 }
-
 .settings-switch {
     position: relative;
     display: inline-block;
@@ -644,13 +569,7 @@
     height: 24px;
     flex-shrink: 0;
 }
-
-.settings-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
+.settings-switch input { opacity: 0; width: 0; height: 0; }
 .settings-switch__slider {
     position: absolute;
     cursor: pointer;
@@ -659,7 +578,6 @@
     border-radius: 24px;
     transition: 0.25s;
 }
-
 .settings-switch__slider::before {
     content: '';
     position: absolute;
@@ -672,7 +590,6 @@
     transition: 0.25s;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
-
 .settings-switch input:checked + .settings-switch__slider { background: #27357e; }
 .settings-switch input:checked + .settings-switch__slider::before { transform: translateX(20px); }
 
@@ -689,7 +606,6 @@
     transition: color 0.15s ease;
     cursor: pointer;
 }
-
 .settings-link:hover { color: #27357e; }
 .settings-link svg { width: 16px; height: 16px; color: #6b7190; }
 
@@ -707,7 +623,6 @@
     padding: 1rem;
     animation: overlay-in 0.2s ease-out;
 }
-
 .app-modal {
     background: #ffffff;
     border-radius: 16px;
@@ -718,12 +633,10 @@
     animation: modal-in 0.22s cubic-bezier(0.32, 0.72, 0, 1);
     text-align: center;
 }
-
 @keyframes modal-in {
     from { opacity: 0; transform: scale(0.95) translateY(8px); }
     to   { opacity: 1; transform: scale(1) translateY(0); }
 }
-
 .app-modal__icon {
     width: 64px;
     height: 64px;
@@ -735,9 +648,7 @@
     justify-content: center;
     margin: 0 auto 1.25rem;
 }
-
 .app-modal__icon svg { width: 32px; height: 32px; }
-
 .app-modal__title {
     font-family: 'Poppins', sans-serif;
     font-size: 1.2rem;
@@ -745,20 +656,17 @@
     color: #1b2140;
     margin: 0 0 0.5rem;
 }
-
 .app-modal__text {
     font-size: 0.9rem;
     color: #6b7190;
     margin: 0 0 1.75rem;
     line-height: 1.5;
 }
-
 .app-modal__actions {
     display: flex;
     gap: 0.75rem;
     justify-content: center;
 }
-
 .app-modal__btn {
     padding: 0.7rem 1.4rem;
     border-radius: 10px;
@@ -771,20 +679,16 @@
     flex: 1;
     max-width: 180px;
 }
-
 .app-modal__btn--ghost {
     background: #f5f6fa;
     color: #1b2140;
     border-color: #e2e5f0;
 }
-
 .app-modal__btn--ghost:hover { background: #eceef7; }
-
 .app-modal__btn--danger {
     background: #c8102e;
     color: #ffffff;
 }
-
 .app-modal__btn--danger:hover { background: #a80d26; }
 
 /* ============================================
@@ -802,7 +706,6 @@
     gap: 1rem;
     flex-wrap: wrap;
 }
-
 .app-footer__version {
     font-family: 'Inter', monospace;
     font-size: 0.7rem;
@@ -826,9 +729,7 @@
     opacity: 0;
     transition: opacity 0.2s ease;
 }
-
 .app-loader--active { opacity: 1; }
-
 .app-loader__bar {
     height: 100%;
     width: 0;
@@ -837,7 +738,6 @@
     animation: loader-progress 1.5s ease-in-out infinite,
                loader-gradient 3s linear infinite;
 }
-
 @keyframes loader-progress {
     0%   { width: 0%; }
     20%  { width: 30%; }
@@ -845,7 +745,6 @@
     80%  { width: 85%; }
     100% { width: 95%; }
 }
-
 @keyframes loader-gradient {
     0%   { background-position: 0% 50%; }
     100% { background-position: 200% 50%; }
@@ -861,46 +760,20 @@
     background: rgba(15, 19, 48, 0.5);
     z-index: 25;
 }
+.app-overlay--visible { display: block; }
 
 /* ============================================
-   RESPONSIVE (mobile / tablette)
+   RESPONSIVE
    ============================================ */
 @media (max-width: 1024px) {
-    .app-overlay--visible {
-        display: block;
-    }
-
-    .app-content {
-        padding: 1.25rem 1rem;
-    }
-
-    .app-footer {
-        padding: 0.85rem 1rem;
-    }
+    .app-content { padding: 1.25rem 1rem; }
+    .app-footer  { padding: 0.85rem 1rem; }
 }
-
 @media (max-width: 640px) {
-    .app-topbar {
-        padding: 0.75rem 1rem;
-    }
-
-    .app-topbar__title {
-        font-size: 0.95rem;
-    }
-
-    .app-topbar__user-text {
-        display: none;
-    }
-
-    .app-topbar__user {
-        padding: 0.35rem;
-    }
-
-    .app-drawer {
-        max-width: 100%;
-    }
-
-    .app-user-menu {
-        width: 220px;
-    }
+    .app-topbar { padding: 0.75rem 1rem; }
+    .app-topbar__title { font-size: 0.95rem; }
+    .app-topbar__user-text { display: none; }
+    .app-topbar__user { padding: 0.35rem; }
+    .app-drawer { max-width: 100%; }
+    .app-user-menu { width: 220px; }
 }

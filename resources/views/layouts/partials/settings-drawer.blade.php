@@ -49,10 +49,15 @@
                     <div class="settings-toggle">
                         <div>
                             <div class="settings-toggle__label">Thème sombre</div>
-                            <div class="settings-toggle__hint">Bientôt disponible</div>
+                            <div class="settings-toggle__hint">Basculez vers l'interface sombre</div>
                         </div>
                         <label class="settings-switch">
-                            <input type="checkbox" disabled>
+                            {{--
+                              x-model="isDark" : la variable DOIT venir du composant parent
+                              (appLayout()), pas d'un x-data local. Sinon chaque toggle
+                              crée un scope isolé et le thème ne se propage pas.
+                            --}}
+                            <input type="checkbox" x-model="isDark" @change="applyTheme()">
                             <span class="settings-switch__slider"></span>
                         </label>
                     </div>
@@ -78,7 +83,6 @@
                 </div>
 
             </div>
-
         </aside>
     </div>
 </template>
