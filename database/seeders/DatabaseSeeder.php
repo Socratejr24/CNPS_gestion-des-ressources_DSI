@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\CategorieUtilisateur;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -12,15 +13,15 @@ class DatabaseSeeder extends Seeder
     use WithoutModelEvents;
 
     /**
-     * Seed the application's database.
+     * Seed the application's database. Idempotent : peut être relancé sans doublons.
      */
     public function run(): void
     {
         // Rôles fonctionnels définis par la SFD (§3.3).
         foreach ([
-            'Administrateur' => 'Administration générale de l\'application',
-            'Demandeur' => 'Création et suivi des demandes de ressources',
-            'Receveur' => 'Traitement des demandes reçues',
+            Role::ADMINISTRATEUR => 'Administration générale de l\'application',
+            Role::DEMANDEUR => 'Création et suivi des demandes de ressources',
+            Role::RECEVEUR => 'Traitement des demandes reçues',
         ] as $libelle => $description) {
             // withTrashed : un rôle supprimé (soft delete) bloque l'unicité du libellé,
             // on le restaure au lieu d'essayer de le recréer.
@@ -34,7 +35,7 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        User::firstOrCreate(
+        $admin = User::firstOrCreate(
             ['email' => 'admin@cnps.ci'],
             User::factory()->raw([
                 'email' => 'admin@cnps.ci',
@@ -42,7 +43,16 @@ class DatabaseSeeder extends Seeder
                 'prenom' => 'DSI',
                 'identifiant' => 'admin',
                 'matricule' => null,
+                'categorie' => CategorieUtilisateur::PRESTATAIRE->value, // compte local
             ]),
         );
+
+        $admin->roles()->syncWithoutDetaching(
+            Role::where('libelle', Role::ADMINISTRATEUR)->pluck('id')
+        );
+
+        if (app()->environment('local')) {
+            $this->call(OrganisationDemoSeeder::class);
+        }
     }
 }

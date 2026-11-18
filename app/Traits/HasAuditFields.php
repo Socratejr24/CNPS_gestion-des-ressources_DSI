@@ -2,8 +2,8 @@
 
 namespace App\Traits;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 trait HasAuditFields
 {
@@ -25,8 +25,14 @@ trait HasAuditFields
             }
         });
 
+        // deleted_by / restoring n'ont de sens que pour les modèles en soft delete
+        // (l'événement `restoring` n'existe pas sur les autres modèles).
+        if (! static::usesSoftDeletes(static::class)) {
+            return;
+        }
+
         static::deleting(function ($model) {
-            if (Auth::check() && static::usesSoftDeletes($model)) {
+            if (Auth::check()) {
                 $model->deleted_by = Auth::id();
                 $model->saveQuietly();
             }

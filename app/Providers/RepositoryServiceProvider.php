@@ -36,6 +36,12 @@ use App\Services\Implementations\RoleService;
         // Permissions
 use App\Services\Implementations\PermissionService; // <-- Ajouté
 
+        // Organisation & utilisateurs
+use App\Services\Interfaces\IOrganisationService;
+use App\Services\Interfaces\IUtilisateurService;
+use App\Services\Implementations\OrganisationService;
+use App\Services\Implementations\UtilisateurService;
+
 
 
 
@@ -62,5 +68,9 @@ $this->app->bind(IPermissionRepository::class, PermissionRepository::class); // 
 
              //Permissions
         $this->app->bind(IPermissionService::class, PermissionService::class); // <-- Ajouté
+
+             //Organisation & utilisateurs
+        $this->app->bind(IOrganisationService::class, OrganisationService::class);
+        $this->app->bind(IUtilisateurService::class, UtilisateurService::class);
     }
 }

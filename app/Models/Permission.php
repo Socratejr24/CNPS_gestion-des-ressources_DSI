@@ -14,6 +14,8 @@ class Permission extends Model
 
     protected $table = 'permissions';
 
+    protected $attributes = ['is_active' => true];
+
 
 
     protected $fillable = [

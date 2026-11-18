@@ -5,6 +5,10 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DemandeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\StructureController;
+use App\Http\Controllers\DepartementController;
+use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\UtilisateurController;
 
 Route::get('/', fn () => redirect('/login'));
 
@@ -13,7 +17,7 @@ Route::get('/', fn () => redirect('/login'));
 // en local et en test. À remplacer par des routes protégées
 // (auth + rôle Administrateur) une fois l'authentification en place.
 if (app()->environment('local', 'testing')) {
-Route::prefix('test-api')->group(function () {
+Route::prefix('test-api')->name('test-api.')->group(function () {
     
     // 1. Rôles
     Route::prefix('roles')->group(function () {
@@ -53,6 +57,24 @@ Route::prefix('test-api')->group(function () {
 
          Route::patch('/{id}/toggle-status', [PermissionController::class, 'toggleStatus'])->whereNumber('id');
     });
+
+    // 3. Organisation (SFD §2) — pas de suppression : désactivation uniquement
+    Route::apiResource('structures', StructureController::class)->except('destroy');
+    Route::patch('structures/{structure}/toggle-status', [StructureController::class, 'toggleStatus']);
+
+    Route::apiResource('departements', DepartementController::class)->except('destroy');
+    Route::patch('departements/{departement}/toggle-status', [DepartementController::class, 'toggleStatus']);
+    Route::put('departements/{departement}/responsable', [DepartementController::class, 'designerResponsable']);
+
+    Route::apiResource('services', ServiceController::class)->except('destroy');
+    Route::patch('services/{service}/toggle-status', [ServiceController::class, 'toggleStatus']);
+    Route::put('services/{service}/chef', [ServiceController::class, 'designerChef']);
+
+    // 4. Utilisateurs (SFD §3)
+    Route::apiResource('utilisateurs', UtilisateurController::class)->except('destroy');
+    Route::patch('utilisateurs/{utilisateur}/toggle-status', [UtilisateurController::class, 'toggleStatus']);
+    Route::put('utilisateurs/{utilisateur}/affectation', [UtilisateurController::class, 'affecter']);
+    Route::put('utilisateurs/{utilisateur}/roles', [UtilisateurController::class, 'attribuerRoles']);
 });
 }
 
