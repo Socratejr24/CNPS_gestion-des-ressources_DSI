@@ -14,15 +14,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Routes Postman de développement (enregistrées seulement en local/test,
+        // cf. routes/web.php).
+        $middleware->validateCsrfTokens(except: [
+            'test-api/*',
+        ]);
     })
-
-->withMiddleware(function (Middleware $middleware) {
-    $middleware->validateCsrfTokens(except: [
-        'test-api/*',
-    ]);
-})
-
 
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

@@ -9,6 +9,10 @@ use App\Http\Controllers\PermissionController;
 Route::get('/', fn () => redirect('/login'));
 
 // --- ROUTES POUR LES TESTS POSTMAN ---
+// ⚠️ Sans authentification ni protection CSRF : enregistrées uniquement
+// en local et en test. À remplacer par des routes protégées
+// (auth + rôle Administrateur) une fois l'authentification en place.
+if (app()->environment('local', 'testing')) {
 Route::prefix('test-api')->group(function () {
     
     // 1. Rôles
@@ -50,15 +54,13 @@ Route::prefix('test-api')->group(function () {
          Route::patch('/{id}/toggle-status', [PermissionController::class, 'toggleStatus'])->whereNumber('id');
     });
 });
+}
 
 // --- ROUTES DU FRONT (Blade) ---
 Route::get('/login', fn () => view('auth.login'))->name('login');
 Route::get('/design-system', fn () => view('design-system.index'))->name('design-system');
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-// Health check pour la détection offline
-Route::get('/up', function () {
-    return response()->json(['status' => 'ok'], 200);
-});
+// Health check : route `/up` fournie par Laravel (voir bootstrap/app.php).
 
 Route::get('/demandes/mes-demandes', [DemandeController::class, 'index'])->name('demandes.index');
