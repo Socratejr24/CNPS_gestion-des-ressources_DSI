@@ -4,63 +4,68 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
+// Auth
+use App\Repositories\Interfaces\IAuthRepository;
+use App\Repositories\Implementations\AuthRepository;
+use App\Repositories\Interfaces\IOtpRepository;
+use App\Repositories\Implementations\OtpRepository;
+use App\Services\Interfaces\IAuthService;
+use App\Services\Implementations\AuthService;
 
-// REPOSITORIES INTERFACES
+// Users
+use App\Repositories\Interfaces\IUserRepository;
+use App\Repositories\Implementations\UserRepository;
+use App\Services\Interfaces\IUserService;
+use App\Services\Implementations\UserService;
+
+
+
+// Roles
 use App\Repositories\Interfaces\IRoleRepository;
-use App\Repositories\Interfaces\IPermissionRepository; // <-- Ajouté
-
-
-// REPOSITORIES IMPLEMENTATIONS
-
-     // Roles
 use App\Repositories\Implementations\RoleRepository;
-
-     // Permissions
-use App\Repositories\Implementations\PermissionRepository; // <-- Ajouté
-
-
-// SERVICES INTERFACES
-
-     // Roles
 use App\Services\Interfaces\IRoleService;
-
-     // Permissions
-use App\Services\Interfaces\IPermissionService; // <-- Ajouté
-
-
-// SERVICES IMPLEMENTATIONS
-
-        // Roles
 use App\Services\Implementations\RoleService;
 
-        // Permissions
-use App\Services\Implementations\PermissionService; // <-- Ajouté
+// Permissions
+use App\Repositories\Interfaces\IPermissionRepository;
+use App\Repositories\Implementations\PermissionRepository;
+use App\Services\Interfaces\IPermissionService;
+use App\Services\Implementations\PermissionService;
 
-
-
+// Types Utilisateurs
+use App\Repositories\Interfaces\ITypeUtilisateurRepository;
+use App\Repositories\Implementations\TypeUtilisateurRepository;
+use App\Services\Interfaces\ITypeUtilisateurService;
+use App\Services\Implementations\TypeUtilisateurService;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
     public function register(): void
-   
     {
+        // ============ AUTH ============
+        $this->app->bind(IAuthRepository::class, AuthRepository::class);
+        $this->app->bind(IOtpRepository::class, OtpRepository::class);
+        $this->app->bind(IAuthService::class, AuthService::class);
 
-         // Bindings des Repositories
-
-             //Roles
-$this->app->bind(IRoleRepository::class, RoleRepository::class);
-
-             //Permissions
-$this->app->bind(IPermissionRepository::class, PermissionRepository::class); // <-- Ajouté
-
-
-
-         // Bindings des services
-            
-             //Roles    
+        // ============ ROLES ============
+        $this->app->bind(IRoleRepository::class, RoleRepository::class);
         $this->app->bind(IRoleService::class, RoleService::class);
 
-             //Permissions
-        $this->app->bind(IPermissionService::class, PermissionService::class); // <-- Ajouté
+        // ============ PERMISSIONS ============
+        $this->app->bind(IPermissionRepository::class, PermissionRepository::class);
+        $this->app->bind(IPermissionService::class, PermissionService::class);
+
+        // ============ TYPES UTILISATEURS ============
+        $this->app->bind(ITypeUtilisateurRepository::class, TypeUtilisateurRepository::class);
+        $this->app->bind(ITypeUtilisateurService::class, TypeUtilisateurService::class);
+
+        // ============ USERS ============
+$this->app->bind(IUserRepository::class, UserRepository::class);
+$this->app->bind(IUserService::class, UserService::class);
+    }
+
+    public function boot(): void
+    {
+        //
     }
 }

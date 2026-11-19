@@ -24,7 +24,7 @@ return new class extends Migration
             $table->unsignedBigInteger('modifie_par')->nullable();
             $table->unsignedBigInteger('supprime_par')->nullable();
             
-            $table->timestamps(); // cree_le et modifie_le
+            $table->timestamps();
             $table->timestamp('supprime_le')->nullable(); // Soft delete
         });
     }

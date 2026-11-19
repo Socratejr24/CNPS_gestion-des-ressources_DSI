@@ -13,9 +13,6 @@ return new class extends Migration
             $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');
             $table->foreignId('permission_id')->constrained('permissions')->onDelete('cascade');
             
-            // $table->foreignId('cree_par')->nullable()->constrained('utilisateurs');
-            // $table->foreignId('modifie_par')->nullable()->constrained('utilisateurs');
-            // $table->foreignId('supprime_par')->nullable()->constrained('utilisateurs');
             
             $table->timestamps();
             $table->timestamp('supprime_le')->nullable();

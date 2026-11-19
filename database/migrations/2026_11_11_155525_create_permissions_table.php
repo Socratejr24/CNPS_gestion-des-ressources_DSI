@@ -14,13 +14,9 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('slug')->unique(); // Ex: 'creer_demande', 'valider_n1'
             
-            // Traçabilité
-            // $table->foreignId('cree_par')->nullable()->constrained('utilisateurs');
-            // $table->foreignId('modifie_par')->nullable()->constrained('utilisateurs');
-            // $table->foreignId('supprime_par')->nullable()->constrained('utilisateurs');
+ 
             
-            $table->timestamps(); // cree_le et modifie_le
-            $table->timestamp('supprime_le')->nullable(); // Soft delete
+           
         });
     }
 

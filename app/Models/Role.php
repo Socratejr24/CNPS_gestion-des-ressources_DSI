@@ -41,4 +41,15 @@ class Role extends Model
         return $this->belongsToMany(Permission::class, 'roles_permissions', 'role_id', 'permission_id')
                     ->withTimestamps();
     }
+
+    /**
+     *  Relation N-N inverse avec les utilisateurs.
+     */
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'utilisateurs_roles', 'role_id', 'utilisateur_id')
+                    ->withTimestamps();
+    }
+    
+
 }
