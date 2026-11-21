@@ -3,6 +3,25 @@
  * Exposé comme fonction globale `loginForm` pour être utilisé
  * dans le Blade via x-data="loginForm()".
  */
+const CLE_MODE = 'cnps.login.mode';
+
+function lireMode() {
+    try {
+        const mode = window.localStorage.getItem(CLE_MODE);
+        return mode === 'prestataire' ? 'prestataire' : 'agent';
+    } catch {
+        return 'agent';
+    }
+}
+
+function memoriserMode(mode) {
+    try {
+        window.localStorage.setItem(CLE_MODE, mode);
+    } catch {
+        // stockage indisponible (navigation privée…) : sans conséquence
+    }
+}
+
 export function registerLoginForm() {
 
     window.loginForm = function () {
@@ -10,42 +29,31 @@ export function registerLoginForm() {
             // --- État ---
             mode: 'agent',              // 'agent' | 'prestataire'
             showPassword: false,
+            capsLock: false,
             loading: false,
             errorMessage: '',
 
-            // --- Computed helpers ---
-            get isPrestataire() {
-                return this.mode === 'prestataire';
+            init(erreurServeur = '') {
+                this.mode = lireMode();
+                this.errorMessage = erreurServeur;
             },
 
+            // --- Libellés selon le type de compte ---
             get identifiantLabel() {
-                return this.isPrestataire ? 'Identifiants' : 'Matricule';
+                return this.mode === 'prestataire' ? 'Identifiant' : 'Matricule';
             },
 
             get identifiantPlaceholder() {
-                return this.isPrestataire
-                    ? 'prenom.nom@entreprise.ci'
-                    : 'Ex : m-XXXX';
-            },
-
-            get identifiantType() {
-                return this.isPrestataire ? 'email' : 'text';
-            },
-
-            get hint() {
-                return this.isPrestataire
-                    ? "Utilisez les identifiants reçus par e-mail de l'administrateur."
-                    : "Utilisez vos identifiants de l'annuaire CNPS.";
+                return this.mode === 'prestataire' ? 'Votre identifiant' : 'Votre matricule';
             },
 
             // --- Actions ---
-            switchMode(newMode) {
-                this.mode = newMode;
-                this.errorMessage = '';   // reset erreur au changement
-            },
-
-            togglePassword() {
-                this.showPassword = !this.showPassword;
+            switchMode(mode) {
+                if (this.mode === mode) return;
+                this.mode = mode;
+                this.errorMessage = '';
+                memoriserMode(mode);
+                this.$nextTick(() => this.$refs.identifiant?.focus());
             },
 
             async submit(event) {
@@ -55,9 +63,15 @@ export function registerLoginForm() {
                 const formData = new FormData(event.target);
                 const payload = {
                     mode: this.mode,
-                    identifiant: formData.get('identifiant'),
+                    identifiant: (formData.get('identifiant') ?? '').trim(),
                     password: formData.get('password'),
                 };
+
+                if (!payload.identifiant || !payload.password) {
+                    this.errorMessage = `Saisissez votre ${this.identifiantLabel.toLowerCase()} et votre mot de passe.`;
+                    this.loading = false;
+                    return;
+                }
 
                 try {
                     const response = await fetch(event.target.action, {
@@ -74,6 +88,7 @@ export function registerLoginForm() {
                     const data = await response.json().catch(() => ({}));
 
                     if (response.ok && data.redirect) {
+                        memoriserMode(this.mode);
                         window.location.href = data.redirect;
                         return;
                     }
