@@ -72,5 +72,8 @@ $this->app->bind(IPermissionRepository::class, PermissionRepository::class); // 
              //Organisation & utilisateurs
         $this->app->bind(IOrganisationService::class, OrganisationService::class);
         $this->app->bind(IUtilisateurService::class, UtilisateurService::class);
+
+             //Référentiels (applications, ressources)
+        $this->app->bind(\App\Services\Interfaces\IReferentielService::class, \App\Services\Implementations\ReferentielService::class);
     }
 }

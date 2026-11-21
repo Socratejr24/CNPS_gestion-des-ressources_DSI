@@ -628,3 +628,7 @@ a.adm-role:hover { border-color: #27357e; color: #27357e; }
     flex-wrap: wrap;
 }
 .adm-danger-row .adm-card__text { margin: 0; }
+
+/* Ligne désactivée dans une liste de référentiel */
+.adm-row-off td > * { opacity: 0.6; }
+.adm-row-off td.adm-col-actions > * { opacity: 1; }

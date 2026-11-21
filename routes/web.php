@@ -17,6 +17,8 @@ use App\Http\Controllers\Admin\DepartementController as AdminDepartementControll
 use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
 use App\Http\Controllers\Admin\RoleController as AdminRoleController;
 use App\Http\Controllers\Admin\PermissionController as AdminPermissionController;
+use App\Http\Controllers\Admin\ApplicationController as AdminApplicationController;
+use App\Http\Controllers\Admin\RessourceController as AdminRessourceController;
 use App\Models\Role;
 
 Route::get('/', fn () => redirect('/login'));
@@ -148,6 +150,21 @@ Route::middleware('auth')->group(function () {
             Route::patch('/services/{service}/statut', [AdminServiceController::class, 'changerStatut'])->name('services.statut');
             Route::put('/services/{service}/chef', [AdminServiceController::class, 'designerChef'])->name('services.chef');
         });
+
+        // Référentiels des demandes (SFD §4 et §5) — pas de suppression : désactivation.
+        Route::get('/applications', [AdminApplicationController::class, 'index'])->name('applications.index');
+        Route::get('/applications/nouvelle', [AdminApplicationController::class, 'create'])->name('applications.create');
+        Route::post('/applications', [AdminApplicationController::class, 'store'])->name('applications.store');
+        Route::get('/applications/{application}/modifier', [AdminApplicationController::class, 'edit'])->name('applications.edit');
+        Route::put('/applications/{application}', [AdminApplicationController::class, 'update'])->name('applications.update');
+        Route::patch('/applications/{application}/statut', [AdminApplicationController::class, 'changerStatut'])->name('applications.statut');
+
+        Route::get('/ressources', [AdminRessourceController::class, 'index'])->name('ressources.index');
+        Route::get('/ressources/nouvelle', [AdminRessourceController::class, 'create'])->name('ressources.create');
+        Route::post('/ressources', [AdminRessourceController::class, 'store'])->name('ressources.store');
+        Route::get('/ressources/{ressource}/modifier', [AdminRessourceController::class, 'edit'])->name('ressources.edit');
+        Route::put('/ressources/{ressource}', [AdminRessourceController::class, 'update'])->name('ressources.update');
+        Route::patch('/ressources/{ressource}/statut', [AdminRessourceController::class, 'changerStatut'])->name('ressources.statut');
 
         // Rôles fonctionnels (SFD §3.3) et catalogue des permissions.
         Route::prefix('roles')->name('roles.')->group(function () {

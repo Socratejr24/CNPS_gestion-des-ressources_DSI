@@ -69,7 +69,7 @@ class DatabaseSeeder extends Seeder
         );
 
         if (app()->environment('local')) {
-            $this->call(OrganisationDemoSeeder::class);
+            $this->call([OrganisationDemoSeeder::class, ReferentielDemoSeeder::class]);
         }
     }
 }
