@@ -417,3 +417,49 @@
     .login-head__title { font-size: 1.5rem; }
     .login-switch__btn { font-size: 0.82rem; padding: 0.6rem 0.5rem; }
 }
+
+/* ===== Page « Affectation en attente » ===== */
+.login-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    margin-bottom: 1.1rem;
+    border-radius: 14px;
+    background: #fff3e0;
+    color: #de7c0f;
+}
+
+.login-recap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin: 0 0 1.5rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid #e2e5f0;
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+.login-recap div { display: flex; justify-content: space-between; gap: 1rem; }
+.login-recap dt { font-size: 0.8rem; color: #6b7190; }
+.login-recap dd { margin: 0; font-size: 0.875rem; font-weight: 600; color: #1b2140; text-align: right; word-break: break-word; }
+
+a.login-submit { text-decoration: none; }
+
+.login-secondary { margin-top: 0.75rem; text-align: center; }
+
+.login-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.6rem;
+    border: 0;
+    border-radius: 8px;
+    background: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6b7190;
+}
+.login-link:hover { color: #c8102e; background: #fdecef; }
