@@ -13,4 +13,5 @@ interface IAuthService
     public function forgotPassword(string $email): void;
     public function verifyOtp(string $email, string $otp): bool;
     public function resetPassword(string $email, string $otp, string $newPassword): bool;
+    public function changePassword(User $user, string $currentPassword, string $newPassword): bool;
 }

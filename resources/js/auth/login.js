@@ -1,35 +1,33 @@
 /**
- * Logique Alpine.js de la page de connexion.
- * Exposé comme fonction globale `loginForm` pour être utilisé
- * dans le Blade via x-data="loginForm()".
+ * Login Alpine.js — connecté à l'API réelle.
  */
 export function registerLoginForm() {
 
     window.loginForm = function () {
         return {
             // --- État ---
-            mode: 'agent',              // 'agent' | 'prestataire'
+            mode: 'agent',
             showPassword: false,
             loading: false,
             errorMessage: '',
 
-            // --- Computed helpers ---
+            // --- Computed ---
             get isPrestataire() {
                 return this.mode === 'prestataire';
             },
 
             get identifiantLabel() {
-                return this.isPrestataire ? 'Identifiants' : 'Matricule';
+                return this.isPrestataire ? 'Identifiant' : 'Matricule';
             },
 
             get identifiantPlaceholder() {
                 return this.isPrestataire
-                    ? 'prenom.nom@entreprise.ci'
-                    : 'Ex : m-XXXX';
+                    ? 'Ex : jkouassi1234'
+                    : 'Ex : MXXXX';
             },
 
             get identifiantType() {
-                return this.isPrestataire ? 'email' : 'text';
+                return 'text';
             },
 
             get hint() {
@@ -41,7 +39,7 @@ export function registerLoginForm() {
             // --- Actions ---
             switchMode(newMode) {
                 this.mode = newMode;
-                this.errorMessage = '';   // reset erreur au changement
+                this.errorMessage = '';
             },
 
             togglePassword() {
@@ -60,55 +58,37 @@ export function registerLoginForm() {
                 };
 
                 try {
-                    // ⚠️ BACKEND À BRANCHER PLUS TARD
-                    // Simulation d'un délai réseau (1.2s)
-                    await new Promise(r => setTimeout(r, 1200));
+                    // Récupérer le CSRF token depuis la meta
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
 
-                    const result = this.attemptLogin(payload);
+                    const response = await fetch('/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                        },
+                        credentials: 'same-origin',  //  envoie les cookies de session
+                        body: JSON.stringify(payload),
+                    });
 
-                    if (!result.success) {
-                        this.errorMessage = result.message;
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        this.errorMessage = data.message || 'Identifiants invalides.';
                         this.loading = false;
-                    } else {
-                        console.log(' Connexion réussie :', result.user);
-                        //  Redirection vers le dashboard
-                        window.location.href = '/dashboard';
+                        return;
                     }
+
+                    //  Succès → redirection
+                    console.log('Connexion réussie :', data.user);
+                    window.location.href = data.redirect || '/dashboard';
+
                 } catch (e) {
-                    this.errorMessage = "Une erreur est survenue. Veuillez réessayer.";
+                    this.errorMessage = "Erreur réseau. Vérifiez votre connexion.";
                     console.error(e);
                     this.loading = false;
                 }
-            },
-            /**
-             *  Comptes de test en dur — à remplacer par un appel API
-             * quand on aura branché le backend.
-             */
-            attemptLogin({ mode, identifiant, password }) {
-                const comptesTest = {
-                    agent: [
-                        { identifiant: 'm2005', password: 'agent', nom: 'DYLANE ACKADIE' },
-                        { identifiant: '654321', password: 'agent123', nom: 'Diallo M.' },
-                    ],
-                    prestataire: [
-                        { identifiant: 'presta@cnps.ci', password: 'presta123', nom: 'Prestataire Test' },
-                    ],
-                };
-
-                const found = comptesTest[mode]?.find(
-                    c => c.identifiant === identifiant && c.password === password
-                );
-
-                if (!found) {
-                    return {
-                        success: false,
-                        message: mode === 'agent'
-                            ? 'Matricule ou mot de passe incorrect.'
-                            : 'Adresse e-mail ou mot de passe incorrect.',
-                    };
-                }
-
-                return { success: true, user: found };
             },
         };
     };

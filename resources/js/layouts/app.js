@@ -9,6 +9,103 @@
 export function registerAppLayout() {
     window.appLayout = function () {
         return {
+
+showCurrentPwd: false,
+showNewPwd: false,
+showConfirmPwd: false,
+
+  // --- Changer de mot de passe ---
+changePasswordModalOpen: false,
+changePasswordLoading: false,
+changePasswordError: '',
+changePasswordSuccess: '',
+changePasswordForm: {
+    current_password: '',
+    password: '',
+    password_confirmation: '',
+},
+// --- Ouvrir la modal "Changer de mot de passe" ---
+openChangePasswordModal() {
+    this.closeAllPanels();
+    this.changePasswordForm = {
+        current_password: '',
+        password: '',
+        password_confirmation: '',
+    };
+    this.changePasswordError = '';
+    this.changePasswordSuccess = '';
+    this.showCurrentPwd = false;
+    this.showNewPwd = false;
+    this.showConfirmPwd = false;
+    this.changePasswordModalOpen = true;
+},
+// --- Soumettre le changement de mot de passe ---
+// --- Soumettre le changement de mot de passe ---
+async submitChangePassword() {
+    this.showCurrentPwd = false;
+    this.showNewPwd = false;
+    this.showConfirmPwd = false;
+    this.changePasswordError = '';
+    this.changePasswordSuccess = '';
+    this.changePasswordLoading = true;
+
+    try {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+
+        const response = await fetch('/test-api/auth/change-password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {}),
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify(this.changePasswordForm),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            if (data.errors) {
+                const firstError = Object.values(data.errors)[0];
+                this.changePasswordError = Array.isArray(firstError) ? firstError[0] : firstError;
+            } else {
+                this.changePasswordError = data.message || 'Une erreur est survenue.';
+            }
+            return;
+        }
+
+        // ✅ Succès
+        this.changePasswordSuccess = data.message || 'Mot de passe modifié avec succès.';
+        this.changePasswordForm = {
+            current_password: '',
+            password: '',
+            password_confirmation: '',
+        };
+
+        if (window.showToast) {
+            window.showToast('success', 'Mot de passe modifié', 'Votre mot de passe a été changé avec succès.');
+        }
+
+        setTimeout(() => {
+            this.changePasswordModalOpen = false;
+            this.changePasswordSuccess = '';
+        }, 1500);
+
+    } catch (e) {
+        console.error('❌ Erreur :', e);
+        this.changePasswordError = 'Erreur réseau. Vérifiez votre connexion.';
+    } finally {
+        this.changePasswordLoading = false;
+    }
+},
+
+
+
+
+
+
+            
             // --- Sidebar ---
             sidebarOpen: true,
             sidebarCollapsed: false,
@@ -124,10 +221,28 @@ export function registerAppLayout() {
                 this.logoutModalOpen = true;
             },
 
-            confirmLogout() {
-                // ⚠️ À remplacer par un POST /logout quand on aura le backend
-                window.location.href = '/login';
+           async confirmLogout() {
+    try {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+
+        const response = await fetch('/logout', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
             },
+            credentials: 'same-origin',
+        });
+
+        // ✅ Session détruite → redirection
+        window.location.href = '/login';
+
+    } catch (e) {
+        console.error('❌ Erreur logout :', e);
+        // Fallback : rediriger quand même
+        window.location.href = '/login';
+    }
+},
 
             // --- Fermer tous les panneaux ---
             closeAllPanels() {
@@ -136,6 +251,7 @@ export function registerAppLayout() {
                 this.profileDrawerOpen = false;
                 this.settingsDrawerOpen = false;
                 this.logoutModalOpen = false;
+                this.changePasswordModalOpen = false;
             },
 
             // --- Loader ---

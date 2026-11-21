@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Services\Implementations;
-
+use App\Http\Requests\ChangePasswordRequest;
 use App\Helpers\AuthHelper;
 use App\Mail\OtpResetPasswordMail;
 use App\Mail\PrestataireCredentialsMail;
@@ -196,4 +196,24 @@ class AuthService implements IAuthService
 
         return true;
     }
+public function changePassword(User $user, string $currentPassword, string $newPassword): bool
+{
+    // 1. Vérifier l'ancien mot de passe
+    if (!Hash::check($currentPassword, $user->password)) {
+        throw ValidationException::withMessages([
+            'current_password' => 'Le mot de passe actuel est incorrect.',
+        ]);
+    }
+
+    // 2. Empêcher de remettre le même mot de passe
+    if (Hash::check($newPassword, $user->password)) {
+        throw ValidationException::withMessages([
+            'password' => 'Le nouveau mot de passe doit être différent de l\'ancien.',
+        ]);
+    }
+
+    // 3. Mettre à jour (le cast 'hashed' hash automatiquement)
+    return $this->authRepository->updatePassword($user, $newPassword);
+}
+
 }

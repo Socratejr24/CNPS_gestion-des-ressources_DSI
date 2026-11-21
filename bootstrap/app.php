@@ -14,28 +14,33 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // Exclure les routes test-api du CSRF pour Postman
+        // ✅ Active Sanctum SPA (session + cookies)
+        $middleware->statefulApi();
+
+        // Exclure test-api du CSRF
         $middleware->validateCsrfTokens(except: [
             'test-api/*',
         ]);
+
+        // ✅ Redirection des invités vers /login (pour les pages web protégées)
+        $middleware->redirectGuestsTo('/login');
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //  Retourner du JSON pour l'API (test-api inclus !)
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => 
                 $request->is('api/*') 
-                || $request->is('test-api/*')   
+                || $request->is('test-api/*')
                 || $request->expectsJson()
         );
 
-        // Gérer les erreurs d'auth en JSON (jamais de redirection /login)
         $exceptions->render(function (AuthenticationException $e, Request $request) {
             if (
                 $request->is('api/*') 
-                || $request->is('test-api/*')   
+                || $request->is('test-api/*')
                 || $request->expectsJson()
             ) {
                 return response()->json(['message' => 'Non authentifié.'], 401);
             }
+            // Sinon → redirection Blade par défaut vers /login
         });
     })->create();
