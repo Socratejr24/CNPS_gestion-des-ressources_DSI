@@ -49,24 +49,24 @@
 
                     <div class="profile-info-row">
                         <span class="profile-info-row__label">Fonction</span>
-                        <span class="profile-info-row__value">Développeur</span>
+                        <span class="profile-info-row__value">{{ $user->fonction }}</span>
                     </div>
 
                     <div class="profile-info-row">
                         <span class="profile-info-row__label">Structure</span>
-                        <span class="profile-info-row__value">DSI</span>
+                        <span class="profile-info-row__value">{{ $user->structure }}</span>
                     </div>
 
 
 <div class="profile-info-row">
                         <span class="profile-info-row__label">Département</span>
-                        <span class="profile-info-row__value">DEV</span>
+                        <span class="profile-info-row__value">{{ $user->departement }}</span>
                     </div>
 
 
                     <div class="profile-info-row">
                         <span class="profile-info-row__label">Service</span>
-                        <span class="profile-info-row__value">Développement IT</span>
+                        <span class="profile-info-row__value">{{ $user->service }}</span>
                     </div>
 
                 </div>

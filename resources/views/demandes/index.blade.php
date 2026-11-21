@@ -17,74 +17,40 @@
     demandeToDelete: null 
 }">
 
-    {{-- ===== STATS ===== --}}
-    <div class="demandes-stats">
-        <div class="demandes-stat">
-            <div class="demandes-stat__icon" style="background:#e6eaf7; color:#27357e;">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-            </div>
-            <div>
-                <div class="demandes-stat__value">{{ $demandes->total() }}</div>
-                <div class="demandes-stat__label">Total demandes</div>
-            </div>
-        </div>
-        <div class="demandes-stat">
-            <div class="demandes-stat__icon" style="background:#fdf3c4; color:#7a5c00;">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            </div>
-            <div>
-                <div class="demandes-stat__value">5</div>
-                <div class="demandes-stat__label">En attente</div>
-            </div>
-        </div>
-        <div class="demandes-stat">
-            <div class="demandes-stat__icon" style="background:#e0f2e7; color:#088e39;">
-                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            </div>
-            <div>
-                <div class="demandes-stat__value">8</div>
-                <div class="demandes-stat__label">Validées</div>
-            </div>
-        </div>
-    </div>
-
     {{-- ===== EN-TÊTE ===== --}}
     <div class="demandes-header">
         <div>
             <h1 class="demandes-title">Mes demandes</h1>
-            <p class="demandes-subtitle">Consultez et gérez vos demandes de ressources</p>
+            <p class="demandes-subtitle">Suivez l'avancement de vos demandes de ressources, du brouillon à la clôture.</p>
         </div>
-        <div style="display:flex; gap:10px;">
-            <button class="demandes-btn-export">
-                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Exporter
-            </button>
-            <button @click="createDrawerOpen = true" class="demandes-btn-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                Nouvelle demande
-            </button>
-        </div>
+        <button type="button" @click="createDrawerOpen = true" class="demandes-btn-primary">
+            <x-icon name="plus" size="sm" />
+            Nouvelle demande
+        </button>
+    </div>
+
+    {{-- ===== COMPTEURS ===== --}}
+    <div class="dash-kpis demandes-kpis">
+        <x-kpi :value="$compteurs['total']" label="Total" hint="Toutes mes demandes" color="blue" icon="file-text" />
+        <x-kpi :value="$compteurs['validation']" label="En validation" hint="Chez le N+1 ou le N+2" color="orange" icon="clock" />
+        <x-kpi :value="$compteurs['action']" label="Action requise" hint="Infos à fournir ou réception à confirmer" color="violet" icon="alert-circle" />
+        <x-kpi :value="$compteurs['cloturees']" label="Clôturées" hint="Réception confirmée" color="green" icon="check-circle" />
     </div>
 
     {{-- ===== FILTRES ===== --}}
-    <form method="GET" action="{{ url('/demandes/mes-demandes') }}" class="demandes-filters">
+    <form method="GET" action="{{ route('demandes.index') }}" class="demandes-filters">
         <div class="demandes-filters__search">
-            <input type="text" name="q" value="{{ $query }}" placeholder="Rechercher par référence ou objet..." class="demandes-filters__input">
+            <input type="search" name="q" value="{{ $query }}" placeholder="Rechercher par référence ou objet…" class="demandes-filters__input" aria-label="Rechercher">
         </div>
-        <select name="statut" class="demandes-filters__select">
+        <select name="statut" class="demandes-filters__select" aria-label="Filtrer par statut">
             <option value="">Tous les statuts</option>
             @foreach($statuts as $statut)
-                <option value="{{ $statut->value }}" @if($statutFiltre === $statut->value) selected @endif>{{ $statut->label() }}</option>
+                <option value="{{ $statut->value }}" @selected($statutFiltre === $statut->value)>{{ $statut->label() }}</option>
             @endforeach
         </select>
-        <select name="type" class="demandes-filters__select">
-            <option value="">Tous les types</option>
-            <option value="Générale" @if($typeFiltre === 'Générale') selected @endif>Générale</option>
-            <option value="Application" @if($typeFiltre === 'Application') selected @endif>Application</option>
-        </select>
         <div class="demandes-filters__actions">
-            @if($query || $statutFiltre || $typeFiltre)
-                <a href="{{ url('/demandes/mes-demandes') }}" class="demandes-filters__reset">Réinitialiser</a>
+            @if($query || $statutFiltre)
+                <a href="{{ route('demandes.index') }}" class="demandes-filters__reset">Réinitialiser</a>
             @endif
             <button type="submit" class="demandes-filters__submit">Filtrer</button>
         </div>
@@ -106,7 +72,7 @@
                     <tr>
                         <th>Réf.</th>
                         <th>Objet</th>
-                        <th>Type</th>
+                        <th>Application</th>
                         <th>Date</th>
                         <th>Statut</th>
                         <th>Destination</th>
@@ -118,7 +84,7 @@
                         <tr>
                             <td class="demandes-table__ref">{{ $demande->reference }}</td>
                             <td class="demandes-table__objet">{{ $demande->objet }}</td>
-                            <td>{{ $demande->type }}</td>
+                            <td class="demandes-table__muted">{{ $demande->application ?? "—" }}</td>
                             <td>{{ $demande->date->format('d/m/Y') }}</td>
                             <td>
                                 <span class="dash-status {{ $demande->statut_obj->badgeClass() }}">
@@ -127,14 +93,14 @@
                             </td>
                             <td>{{ $demande->destination }}</td>
                             <td class="demandes-table__col-actions">
-                                <div style="display:flex; gap:4px; justify-content:flex-end;">
+                                <div class="demandes-table__actions">
                                     
                                     {{-- Bouton Voir --}}
                                     <button type="button" class="demandes-table__action--btn view" title="Voir"
                                             @click="demandeToView = {
                                                 reference: '{{ $demande->reference }}',
                                                 objet: '{{ $demande->objet }}',
-                                                type: '{{ $demande->type }}',
+                                                application: '{{ $demande->application ?? "—" }}',
                                                 date: '{{ $demande->date->format('d/m/Y') }}',
                                                 statut: '{{ $demande->statut_obj->label() }}',
                                                 destination: '{{ $demande->destination }}',
@@ -275,8 +241,8 @@
                         <div style="font-weight:500;" x-text="demandeToView?.objet"></div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Type</label>
-                        <div x-text="demandeToView?.type"></div>
+                        <label class="form-label">Application</label>
+                        <div x-text="demandeToView?.application"></div>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Date de création</label>

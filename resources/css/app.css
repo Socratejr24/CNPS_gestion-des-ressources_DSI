@@ -1,17 +1,60 @@
 /* ============================================
-   Point d'entrée CSS global
+   Point d'entrée CSS global (Tailwind CSS v4)
    ============================================ */
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Polices embarquées (fonctionne sans accès Internet) */
+@import "@fontsource-variable/inter";
+@import "@fontsource/poppins/500.css";
+@import "@fontsource/poppins/600.css";
+@import "@fontsource/poppins/700.css";
+
+@import "tailwindcss";
+
+/* Mode sombre piloté par la classe .dark sur <html> (cf. settings-drawer) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Charte CNPS — génère bg-cnps-blue, text-cnps-muted, font-heading, etc. */
+@theme {
+    --color-cnps-blue: #27357E;
+    --color-cnps-blueDk: #1D2865;
+    --color-cnps-orange: #DE7C0F;
+    --color-cnps-orangeDk: #C26C0B;
+    --color-cnps-green: #088E39;
+    --color-cnps-yellow: #F6D01D;
+    --color-cnps-bg: #F5F6FA;
+    --color-cnps-text: #1B2140;
+    --color-cnps-muted: #6B7190;
+    --color-cnps-border: #E2E5F0;
+    --color-cnps-error: #C8102E;
+
+    --font-sans: 'Inter Variable', 'Inter', system-ui, sans-serif;
+    --font-heading: 'Poppins', 'Inter Variable', sans-serif;
+}
+
+/* Composants Blade (x-card, x-button, x-badge...) : chargés sur toutes les pages */
+@import "./components/buttons.css";
+@import "./components/forms.css";
+@import "./components/badges.css";
+@import "./components/icons.css";
+@import "./components/cards.css";
+@import "./components/tables.css";
+@import "./components/alerts.css";
+@import "./components/modals.css";
+@import "./components/toasts.css";
+@import "./components/filters.css";
 
 /* --- Cloak Alpine --- */
 [x-cloak] { display: none !important; }
 
 /* --- Base --- */
 html, body {
-    font-family: 'Inter', system-ui, sans-serif;
-    background: #f5f6fa;
-    color: #1b2140;
+    font-family: var(--font-sans);
+    background: var(--color-cnps-bg);
+    color: var(--color-cnps-text);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Tailwind v4 : les boutons reprennent le curseur pointeur */
+button:not(:disabled), [role="button"]:not(:disabled) {
+    cursor: pointer;
 }

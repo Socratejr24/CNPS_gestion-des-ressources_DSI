@@ -19,6 +19,18 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->validateCsrfTokens(except: [
             'test-api/*',
         ]);
+
+        // Authentification
+        $middleware->redirectGuestsTo(fn () => route('login'));
+        $middleware->redirectUsersTo(fn () => route('dashboard'));
+        $middleware->web(append: [
+            \App\Http\Middleware\VerifierCompteActif::class,
+        ]);
+
+        $middleware->alias([
+            'affectation' => \App\Http\Middleware\ExigerAffectation::class,
+            'role' => \App\Http\Middleware\ExigerRole::class,
+        ]);
     })
 
     ->withExceptions(function (Exceptions $exceptions): void {

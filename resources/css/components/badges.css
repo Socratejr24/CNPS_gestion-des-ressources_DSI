@@ -79,3 +79,36 @@
     font-size: 0.8rem;
     padding: 0.35rem 0.85rem;
 }
+/* ============================================
+   STATUTS DE DEMANDE (SFD §11, tableau 2)
+   Couleurs indicatives de la SFD, contrastes AA sur fond clair.
+   ============================================ */
+.dash-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 99px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    line-height: 1.4;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.dash-status::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.dash-status--brouillon      { background: #eceef2; color: #555b75; } /* Gris */
+.dash-status--validation     { background: #fdf3c4; color: #7a5c00; } /* Jaune */
+.dash-status--a-traiter      { background: #e3f1fc; color: #12609b; } /* Bleu clair */
+.dash-status--traitement     { background: #e1e6fb; color: #27357e; } /* Bleu */
+.dash-status--info           { background: #fdecd9; color: #9a4f00; } /* Orange */
+.dash-status--confirmation   { background: #f0e9f9; color: #5f3797; } /* Violet */
+.dash-status--cloturee       { background: #d9f0e2; color: #066a2b; } /* Vert */
+.dash-status--rejetee        { background: #fadadf; color: #8f0c21; } /* Rouge */
+.dash-status--regularisation { background: #fbdcc4; color: #8a3a00; } /* Orange foncé */

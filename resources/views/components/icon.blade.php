@@ -68,7 +68,8 @@
         'xl' => 32,
     ];
 
-    $px = $sizes[$size] ?? 20;
+    // size="css" : dimensions laissées au CSS (ex. sidebar repliée)
+    $px = $size === 'css' ? null : ($sizes[$size] ?? 20);
     $svgContent = $icons[$name] ?? $icons['home'];
     $classes = 'icon icon--' . $size . ($color ? ' icon--' . $color : '');
 @endphp
@@ -77,10 +78,7 @@
      viewBox="0 0 24 24"
      fill="none"
      stroke="currentColor"
-     width="{{ $px }}"
-     height="{{ $px }}"
-     class="{{ $classes }}"
-     style="width: {{ $px }}px; height: {{ $px }}px; flex-shrink: 0;"
-     {{ $attributes }}>
+     @if($px) width="{{ $px }}" height="{{ $px }}" style="width: {{ $px }}px; height: {{ $px }}px; flex-shrink: 0;" @endif
+     {{ $attributes->merge(['class' => $classes]) }}>
     {!! $svgContent !!}
 </svg>

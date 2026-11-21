@@ -8,7 +8,9 @@
 
 @section('content')
 
-<div class="login-bg" x-data="loginForm()">
+<div class="login-bg"
+     x-data="loginForm()"
+     x-init="errorMessage = @js($errors->first('identifiant') ?: '')">
 
     {{-- Blobs décoratifs --}}
     <span class="login-blob login-blob--orange"></span>
@@ -56,7 +58,9 @@
         </template>
 
         {{-- Formulaire --}}
-        <form method="POST" action="#" @submit.prevent="submit" novalidate>
+        <form method="POST" action="{{ route('login.store') }}" @submit.prevent="submit" novalidate>
+
+            <input type="hidden" name="mode" :value="mode">
 
             @csrf
 

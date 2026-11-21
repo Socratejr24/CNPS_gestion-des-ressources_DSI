@@ -35,22 +35,30 @@ enum DemandeStatut: string
     }
 
     /**
-     * Classe CSS pour le badge.
-     * Utilise les classes `.dash-status--xxx`.
+     * Classe CSS du badge (`.dash-status--xxx`, cf. components/badges.css).
+     * Couleurs du tableau 2 de la SFD.
      */
     public function badgeClass(): string
     {
         return match ($this) {
-            self::BROUILLON                    => 'dash-status--brouillon',
-            self::EN_ATTENTE_N1                => 'dash-status--attente',
-            self::EN_ATTENTE_N2                => 'dash-status--attente',
-            self::EN_ATTENTE_TRAITEMENT        => 'dash-status--cours',
-            self::EN_COURS_TRAITEMENT          => 'dash-status--cours',
-            self::INFO_COMPLEMENTAIRE_DEMANDEE => 'dash-status--attente',
-            self::EN_ATTENTE_CONFIRMATION      => 'dash-status--attente',
-            self::CLOTUREE                     => 'dash-status--validee',
-            self::REJETEE                      => 'dash-status--rejetee',
-            self::EN_COURS_REGULARISATION      => 'dash-status--attente',
+            self::BROUILLON                    => 'dash-status--brouillon',      // Gris
+            self::EN_ATTENTE_N1                => 'dash-status--validation',     // Jaune
+            self::EN_ATTENTE_N2                => 'dash-status--validation',     // Jaune
+            self::EN_ATTENTE_TRAITEMENT        => 'dash-status--a-traiter',      // Bleu clair
+            self::EN_COURS_TRAITEMENT          => 'dash-status--traitement',     // Bleu
+            self::INFO_COMPLEMENTAIRE_DEMANDEE => 'dash-status--info',           // Orange
+            self::EN_ATTENTE_CONFIRMATION      => 'dash-status--confirmation',   // Violet
+            self::CLOTUREE                     => 'dash-status--cloturee',       // Vert
+            self::REJETEE                      => 'dash-status--rejetee',        // Rouge
+            self::EN_COURS_REGULARISATION      => 'dash-status--regularisation', // Orange foncé
         };
+    }
+
+    /**
+     * États finaux (SFD §11.3).
+     */
+    public function estFinal(): bool
+    {
+        return $this === self::CLOTUREE || $this === self::REJETEE;
     }
 }

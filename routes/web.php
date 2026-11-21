@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\ConnexionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DemandeController;
 use App\Http\Controllers\RoleController;
@@ -79,10 +80,28 @@ Route::prefix('test-api')->name('test-api.')->group(function () {
 }
 
 // --- ROUTES DU FRONT (Blade) ---
-Route::get('/login', fn () => view('auth.login'))->name('login');
-Route::get('/design-system', fn () => view('design-system.index'))->name('design-system');
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 // Health check : route `/up` fournie par Laravel (voir bootstrap/app.php).
 
-Route::get('/demandes/mes-demandes', [DemandeController::class, 'index'])->name('demandes.index');
+// Authentification (SFD §3.1)
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [ConnexionController::class, 'create'])->name('login');
+    Route::post('/login', [ConnexionController::class, 'store'])->name('login.store');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [ConnexionController::class, 'destroy'])->name('logout');
+
+    // RG-11 : page affichée tant que l'administrateur n'a pas affecté l'utilisateur.
+    Route::get('/affectation-en-attente', function () {
+        return auth()->user()->peutAccederAuMetier()
+            ? redirect()->route('dashboard')
+            : view('auth.affectation-en-attente');
+    })->name('affectation.attente');
+
+    // Fonctionnalités métier : nécessitent une affectation organisationnelle.
+    Route::middleware('affectation')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/demandes/mes-demandes', [DemandeController::class, 'index'])->name('demandes.index');
+    });
+});

@@ -160,3 +160,12 @@
 .kpi--yellow .kpi__label-dot { background: #f6d01d; }
 .kpi--yellow .kpi__icon      { background: #fdf8dd; color: #a68a00; }
 .kpi--yellow .kpi__value     { color: #a68a00; }
+.kpi--violet .kpi__label-dot { background: #7c4dbc; }
+.kpi--violet .kpi__icon      { background: #f0e9f9; color: #7c4dbc; }
+.kpi--violet .kpi__value     { color: #7c4dbc; }
+
+.kpi__hint {
+    font-size: 0.75rem;
+    color: #6b7190;
+    margin: 0;
+}

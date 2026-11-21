@@ -777,3 +777,28 @@
     .app-drawer { max-width: 100%; }
     .app-user-menu { width: 220px; }
 }
+/* ============================================
+   ZONE DE CONTENU
+   ============================================ */
+.app-content {
+    flex: 1;
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding: 1.75rem 2rem 2.5rem;
+}
+
+@media (max-width: 1024px) {
+    .app-content { padding: 1.25rem 1rem 2rem; }
+}
+
+.app-overlay { z-index: 35; }
+
+.app-user-menu__email {
+    font-size: 0.75rem;
+    color: #6b7190;
+    margin-top: 0.15rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

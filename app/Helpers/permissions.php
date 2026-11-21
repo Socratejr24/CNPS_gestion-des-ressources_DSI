@@ -1,36 +1,55 @@
 <?php
 
 /**
- * Helper de permissions — PLACEHOLDER.
- * ⚠️ Sera remplacé par le vrai système (Spatie) quand on branchera l'auth.
+ * Helpers d'affichage utilisés par les vues Blade (sidebar, profil, dashboard).
  */
 
+use App\Models\User;
+
 if (! function_exists('user_can')) {
+    /**
+     * Vrai si l'utilisateur connecté possède la permission (slug) via l'un de ses rôles actifs.
+     */
     function user_can(string $permission): bool
     {
-        // TODO: brancher le vrai système de permissions
-        return true;
+        return auth()->user()?->hasPermission($permission) ?? false;
     }
 }
 
 if (! function_exists('current_user')) {
     /**
-     * Retourne l'utilisateur connecté — PLACEHOLDER.
-     * ⚠️ À remplacer par auth()->user() quand on aura l'auth.
+     * Vue « affichage » de l'utilisateur connecté.
+     * Conserve la forme attendue par les vues (chaînes et tableau de rôles).
      */
-    function current_user(): ?object
+    function current_user(): object
     {
+        /** @var User|null $user */
+        $user = auth()->user();
+
+        if (! $user) {
+            return (object) [
+                'nom' => '', 'prenom' => 'Invité', 'initiales' => '?', 'matricule' => '—',
+                'email' => '—', 'fonction' => '—', 'structure' => '—', 'departement' => '—',
+                'service' => '—', 'roles' => [],
+            ];
+        }
+
+        $user->loadMissing(['service.departement.structure', 'roles']);
+        $departement = $user->service?->departement;
+
         return (object) [
-            'nom'       => 'Adou',
-            'prenom'    => 'Kouassi',
-            'initiales' => 'KA',
-            'matricule' => '104582',
-            'email'     => 'kouassi.adou@cnps.ci',
-            'fonction'  => 'Développeur',
-            'structure' => 'DSI',
-            'departement' => 'DEV',
-            'service'     => 'Développement IT',
-            'roles'     => ['Demandeur', 'Receveur'],
+            'id' => $user->id,
+            'nom' => $user->nom,
+            'prenom' => $user->prenom,
+            'initiales' => mb_strtoupper(mb_substr($user->prenom, 0, 1).mb_substr($user->nom, 0, 1)),
+            'matricule' => $user->matricule ?? '—',
+            'email' => $user->email,
+            'fonction' => $user->fonction ?? '—',
+            'categorie' => $user->categorie?->label(),
+            'structure' => $departement?->structure?->libelle ?? '—',
+            'departement' => $departement?->libelle ?? '—',
+            'service' => $user->service?->libelle ?? 'Affectation en attente',
+            'roles' => $user->roles->where('is_active', true)->pluck('libelle')->values()->all(),
         ];
     }
 }

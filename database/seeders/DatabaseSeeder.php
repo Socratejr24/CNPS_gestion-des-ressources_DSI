@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\CategorieUtilisateur;
+use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -33,6 +34,22 @@ class DatabaseSeeder extends Seeder
             if ($role->trashed()) {
                 $role->restore();
             }
+        }
+
+        // Permissions d'affichage utilisées par la sidebar (user_can()).
+        foreach ([
+            'voir.traitement' => ['Voir la section Traitement', Role::RECEVEUR],
+            'voir.administration' => ['Voir la section Administration', Role::ADMINISTRATEUR],
+        ] as $slug => [$libelle, $roleLibelle]) {
+            $permission = Permission::withTrashed()->firstOrCreate(
+                ['slug' => $slug],
+                ['libelle' => $libelle, 'is_active' => true],
+            );
+            if ($permission->trashed()) {
+                $permission->restore();
+            }
+            Role::where('libelle', $roleLibelle)->first()
+                ->permissions()->syncWithoutDetaching([$permission->id]);
         }
 
         $admin = User::firstOrCreate(

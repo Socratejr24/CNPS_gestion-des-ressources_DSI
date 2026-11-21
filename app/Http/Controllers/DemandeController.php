@@ -24,8 +24,6 @@ class DemandeController extends Controller
         // ============================================
         $query = $request->input('q');
         $statutFiltre = $request->input('statut');
-        $typeFiltre = $request->input('type');
-
         $demandes = $allDemandes;
 
         // Recherche (objet ou référence)
@@ -43,12 +41,14 @@ class DemandeController extends Controller
             });
         }
 
-        // Filtre type
-        if ($typeFiltre) {
-            $demandes = $demandes->filter(function ($d) use ($typeFiltre) {
-                return $d->type === $typeFiltre;
-            });
-        }
+        // Compteurs (sur l'ensemble des demandes, indépendamment des filtres)
+        $compter = fn (DemandeStatut ...$s) => $allDemandes->filter(fn ($d) => in_array($d->statut_obj, $s, true))->count();
+        $compteurs = [
+            'total' => $allDemandes->count(),
+            'validation' => $compter(DemandeStatut::EN_ATTENTE_N1, DemandeStatut::EN_ATTENTE_N2),
+            'action' => $compter(DemandeStatut::INFO_COMPLEMENTAIRE_DEMANDEE, DemandeStatut::EN_ATTENTE_CONFIRMATION),
+            'cloturees' => $compter(DemandeStatut::CLOTUREE),
+        ];
 
         // ============================================
         // 3. Pagination
@@ -86,7 +86,7 @@ class DemandeController extends Controller
             'demandes' => $paginated,
             'statuts' => DemandeStatut::cases(),
             'statutFiltre' => $statutFiltre,
-            'typeFiltre' => $typeFiltre,
+            'compteurs' => $compteurs,
             'query' => $query,
             'applications' => $applications,
             'ressources' => $ressources,
@@ -101,7 +101,8 @@ class DemandeController extends Controller
      */
     private function getFakeDemandes(): Collection
     {
-        $types = ['Générale', 'Application'];
+        // Une demande peut être associée à une application (RG-12), ou non.
+        $applications = ['CNPS-Web', null, 'GED', null, 'Portail Agent'];
         $destinations = [
             'Service IT',
             'Service Infrastructure',
@@ -116,12 +117,10 @@ class DemandeController extends Controller
         for ($i = 142; $i >= 119; $i--) {
             $statut = $statuts[$i % count($statuts)];
             $date = now()->subDays(($i - 119) * 2);
-            $type = $types[$i % 2];
-
             $demandes->push((object) [
-                'reference'     => 'DEM-' . str_pad($i, 4, '0', STR_PAD_LEFT),
+                'reference'     => 'DEM-2026-' . str_pad($i, 4, '0', STR_PAD_LEFT),
                 'objet'         => $this->getObjetFake($i),
-                'type'          => $type,
+                'application'   => $applications[$i % count($applications)],
                 'date'          => $date,
                 'statut'        => $statut->value,
                 'statut_obj'    => $statut,

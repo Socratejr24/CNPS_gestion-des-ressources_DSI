@@ -13,6 +13,9 @@ export function registerAppLayout() {
             sidebarOpen: true,
             sidebarCollapsed: false,
 
+            // --- Notifications (non lues) : alimenté par le module Notifications ---
+            notifCount: 0,
+
             // --- Menu utilisateur ---
             userMenuOpen: false,
 
@@ -124,9 +127,20 @@ export function registerAppLayout() {
                 this.logoutModalOpen = true;
             },
 
-            confirmLogout() {
-                // ⚠️ À remplacer par un POST /logout quand on aura le backend
-                window.location.href = '/login';
+            async confirmLogout() {
+                try {
+                    await fetch('/logout', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        },
+                        credentials: 'same-origin',
+                    });
+                } finally {
+                    // Session déjà expirée (419) ou non : on retourne à la connexion.
+                    window.location.href = '/login';
+                }
             },
 
             // --- Fermer tous les panneaux ---

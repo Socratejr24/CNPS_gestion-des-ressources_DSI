@@ -34,20 +34,22 @@ class OrganisationDemoSeeder extends Seeder
 
         $roles = Role::pluck('id', 'libelle');
 
+        // Les matricules des agents correspondent aux comptes de l'annuaire simulé (config/ldap.php).
         $personnes = [
-            ['konan.yao@cnps.ci', 'Yao', 'Konan', 'AGENT', [Role::DEMANDEUR]],
-            ['koffi.aya@cnps.ci', 'Aya', 'Koffi', 'AGENT', [Role::DEMANDEUR, Role::RECEVEUR]],
-            ['kouassi.adou@cnps.ci', 'Adou', 'Kouassi', 'AGENT', [Role::DEMANDEUR, Role::RECEVEUR]],
-            ['bamba.issa@prestataire.ci', 'Issa', 'Bamba', 'PRESTATAIRE', [Role::DEMANDEUR]],
+            ['konan.yao@cnps.ci', 'm1003', 'Yao', 'Konan', 'AGENT', [Role::DEMANDEUR]],
+            ['koffi.aya@cnps.ci', 'm1002', 'Aya', 'Koffi', 'AGENT', [Role::DEMANDEUR, Role::RECEVEUR]],
+            ['kouassi.adou@cnps.ci', 'm1001', 'Adou', 'Kouassi', 'AGENT', [Role::DEMANDEUR, Role::RECEVEUR]],
+            ['bamba.issa@prestataire.ci', null, 'Issa', 'Bamba', 'PRESTATAIRE', [Role::DEMANDEUR]],
         ];
 
         $utilisateurs = [];
-        foreach ($personnes as [$email, $nom, $prenom, $categorie, $libellesRoles]) {
+        foreach ($personnes as [$email, $matricule, $nom, $prenom, $categorie, $libellesRoles]) {
             $user = User::firstOrCreate(['email' => $email], User::factory()->raw([
                 'email' => $email,
+                'matricule' => $matricule,
                 'nom' => $nom,
                 'prenom' => $prenom,
-                'identifiant' => strtolower($prenom.'.'.$nom),
+                'identifiant' => $matricule ?? strtolower($prenom.'.'.$nom),
                 'categorie' => $categorie,
                 // Les agents s'authentifieront via LDAP : pas de mot de passe local.
                 'password' => $categorie === 'AGENT' ? null : 'password',

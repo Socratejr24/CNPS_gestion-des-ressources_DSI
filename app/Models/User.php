@@ -79,6 +79,15 @@ class User extends Authenticatable
         return $this->service_id !== null;
     }
 
+    /**
+     * Accès aux fonctionnalités métier (RG-11). L'administrateur en est dispensé :
+     * c'est lui qui crée l'organisation et affecte les utilisateurs.
+     */
+    public function peutAccederAuMetier(): bool
+    {
+        return $this->aUneAffectation() || $this->estAdministrateur();
+    }
+
     public function departement(): ?Departement
     {
         return $this->service?->departement;
@@ -106,6 +115,15 @@ class User extends Authenticatable
         return $this->service !== null && $this->service->chef_id === $this->id;
     }
 
+    /**
+     * Vrai si l'utilisateur porte une responsabilité de validation (N+1 ou N+2).
+     */
+    public function estValidateur(): bool
+    {
+        return Service::where('chef_id', $this->id)->exists()
+            || Departement::where('responsable_id', $this->id)->exists();
+    }
+
     public function estResponsableDeSonDepartement(): bool
     {
         $departement = $this->departement();
@@ -125,6 +143,19 @@ class User extends Authenticatable
     public function hasAnyRole(string ...$libelles): bool
     {
         return collect($libelles)->contains(fn (string $libelle) => $this->hasRole($libelle));
+    }
+
+    /**
+     * Permission (slug) accordée par l'un des rôles actifs de l'utilisateur.
+     */
+    public function hasPermission(string $slug): bool
+    {
+        $this->loadMissing('roles.permissions');
+
+        return $this->roles
+            ->where('is_active', true)
+            ->flatMap->permissions
+            ->contains(fn (Permission $p) => $p->is_active && $p->slug === $slug);
     }
 
     public function estAdministrateur(): bool

@@ -9,57 +9,6 @@
     max-width: 100%;
 }
 
-/* ===== STATS ===== */
-.demandes-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1rem;
-}
-
-.demandes-stat {
-    background: #ffffff;
-    border: 1px solid #e2e5f0;
-    border-radius: 12px;
-    padding: 1rem 1.15rem;
-    display: flex;
-    align-items: center;
-    gap: 0.85rem;
-    transition: all 0.2s ease;
-    cursor: default;
-}
-
-.demandes-stat:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(39, 53, 126, 0.12);
-    border-color: #27357e;
-}
-
-.demandes-stat__icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.demandes-stat__value {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #1b2140;
-    line-height: 1;
-    margin-bottom: 0.15rem;
-}
-
-.demandes-stat__label {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #6b7190;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-}
 
 /* ===== EN-TÊTE ===== */
 .demandes-header {
@@ -341,22 +290,6 @@
 }
 
 /* ===== STATUTS (BADGES) ===== */
-.dash-status {
-    display: inline-block;
-    padding: 0.2rem 0.6rem;
-    border-radius: 99px;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.68rem;
-    font-weight: 600;
-    white-space: nowrap;
-}
-
-.dash-status--brouillon { background: #eceef2; color: #6b7190; }
-.dash-status--attente   { background: #fdf3c4; color: #7a5c00; }
-.dash-status--cours     { background: #e1e6fb; color: #27357e; }
-.dash-status--validee   { background: #d9f0e2; color: #066a2b; }
-.dash-status--cloturee  { background: #e8ecf8; color: #27357e; }
-.dash-status--rejetee   { background: #fadadf; color: #8f0c21; }
 
 /* ===== EMPTY STATE ===== */
 .demandes-empty {
@@ -785,3 +718,22 @@ select.form-control {
     background: #f9fafc;
     flex-shrink: 0;
 }
+/* ===== COMPTEURS (composant x-kpi) ===== */
+.demandes-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+}
+@media (max-width: 1100px) { .demandes-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px)  { .demandes-kpis { grid-template-columns: 1fr; } }
+
+/* ===== TABLEAU : ajustements ===== */
+.demandes-table-wrapper { overflow-x: auto; }
+.demandes-table { min-width: 860px; }
+.demandes-table__muted { color: #6b7190; }
+.demandes-table__actions {
+    display: flex;
+    gap: 4px;
+    justify-content: flex-end;
+}
+.demandes-table__ref { white-space: nowrap; }

@@ -60,55 +60,41 @@ export function registerLoginForm() {
                 };
 
                 try {
-                    // ⚠️ BACKEND À BRANCHER PLUS TARD
-                    // Simulation d'un délai réseau (1.2s)
-                    await new Promise(r => setTimeout(r, 1200));
+                    const response = await fetch(event.target.action, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        },
+                        credentials: 'same-origin',
+                        body: JSON.stringify(payload),
+                    });
 
-                    const result = this.attemptLogin(payload);
+                    const data = await response.json().catch(() => ({}));
 
-                    if (!result.success) {
-                        this.errorMessage = result.message;
-                        this.loading = false;
-                    } else {
-                        console.log(' Connexion réussie :', result.user);
-                        //  Redirection vers le dashboard
-                        window.location.href = '/dashboard';
+                    if (response.ok && data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
                     }
+
+                    if (response.status === 419) {
+                        // Jeton CSRF expiré (page restée ouverte trop longtemps)
+                        this.errorMessage = 'Votre session a expiré. La page va être rechargée.';
+                        setTimeout(() => window.location.reload(), 1500);
+                        return;
+                    }
+
+                    // 422 : validation / identifiants incorrects — 429 : trop de tentatives
+                    this.errorMessage = data.message
+                        ?? Object.values(data.errors ?? {})[0]?.[0]
+                        ?? 'Une erreur est survenue. Veuillez réessayer.';
                 } catch (e) {
-                    this.errorMessage = "Une erreur est survenue. Veuillez réessayer.";
+                    this.errorMessage = 'Impossible de joindre le serveur. Vérifiez votre connexion.';
                     console.error(e);
-                    this.loading = false;
-                }
-            },
-            /**
-             *  Comptes de test en dur — à remplacer par un appel API
-             * quand on aura branché le backend.
-             */
-            attemptLogin({ mode, identifiant, password }) {
-                const comptesTest = {
-                    agent: [
-                        { identifiant: 'm2005', password: 'agent', nom: 'DYLANE ACKADIE' },
-                        { identifiant: '654321', password: 'agent123', nom: 'Diallo M.' },
-                    ],
-                    prestataire: [
-                        { identifiant: 'presta@cnps.ci', password: 'presta123', nom: 'Prestataire Test' },
-                    ],
-                };
-
-                const found = comptesTest[mode]?.find(
-                    c => c.identifiant === identifiant && c.password === password
-                );
-
-                if (!found) {
-                    return {
-                        success: false,
-                        message: mode === 'agent'
-                            ? 'Matricule ou mot de passe incorrect.'
-                            : 'Adresse e-mail ou mot de passe incorrect.',
-                    };
                 }
 
-                return { success: true, user: found };
+                this.loading = false;
             },
         };
     };

@@ -86,17 +86,5 @@
 
     @stack('scripts')
 
-    {{-- Détection hors-connexion --}}
-    <!-- <script>
-      {{-- Détection offline (fetch) --}}
-    <script src="{{ asset('js/offline-detector.js') }}"></script>
-
-    {{-- Détection offline (navigator, en complément) --}}
-    <script>
-        window.addEventListener('offline', () => {
-            window.location.href = '/offline.html';
-        });
-    </script> -->
-
 </body>
 </html>

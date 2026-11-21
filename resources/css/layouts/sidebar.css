@@ -472,3 +472,29 @@
     animation: none !important;
 }
 
+
+/* ============================================
+   RESPONSIVE
+   - Mobile / tablette (< 1024px) : tiroir superposé, fermé par défaut
+   - Ordinateur : masquage complet possible via le burger
+   ============================================ */
+@media (max-width: 1023.98px) {
+    .app-sidebar {
+        position: fixed;
+        inset: 0 auto 0 0;
+        height: 100dvh;
+        z-index: 40;
+        box-shadow: 0 0 40px rgba(15, 19, 48, 0.35);
+        transition: transform 0.25s ease;
+    }
+    .app-sidebar--hidden-mobile {
+        transform: translateX(-100%);
+        box-shadow: none;
+    }
+}
+
+@media (min-width: 1024px) {
+    .app-sidebar--hidden-mobile {
+        display: none;
+    }
+}

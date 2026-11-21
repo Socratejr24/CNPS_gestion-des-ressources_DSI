@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Role;
+use App\Models\Service;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -81,8 +82,13 @@ class SocleTest extends TestCase
         $this->withoutVite();
 
         $this->get('/login')->assertOk();
-        $this->get('/dashboard')->assertOk();
-        $this->get('/demandes/mes-demandes')->assertOk();
+
+        $user = User::factory()->create([
+            'service_id' => Service::factory()->create()->id,
+        ]);
+
+        $this->actingAs($user)->get('/dashboard')->assertOk();
+        $this->actingAs($user)->get('/demandes/mes-demandes')->assertOk();
     }
 
     public function test_health_route_is_available(): void

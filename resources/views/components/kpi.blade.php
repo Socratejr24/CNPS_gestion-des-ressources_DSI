@@ -5,6 +5,7 @@
     'icon'   => null,
     'trend'  => null,
     'trendDirection' => 'up',
+    'hint'   => null,
 ])
 
 <div class="kpi kpi--{{ $color }}" {{ $attributes }}>
@@ -22,6 +23,10 @@
     </div>
 
     <div class="kpi__value">{{ $value }}</div>
+
+    @if($hint)
+        <p class="kpi__hint">{{ $hint }}</p>
+    @endif
 
     @if($trend)
         <div class="kpi__trend kpi__trend--{{ $trendDirection }}">

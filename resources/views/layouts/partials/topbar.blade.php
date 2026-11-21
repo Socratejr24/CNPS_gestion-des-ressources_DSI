@@ -1,8 +1,10 @@
+@php($user = current_user())
+
 <header class="app-topbar">
     <div class="app-topbar__left">
         <button type="button"
                 class="app-burger"
-                :class="{ 'app-burger--open': sidebarOpen && !sidebarCollapsed }"
+                :class="{ 'app-burger--open': sidebarOpen && window.innerWidth < 1024 }"
                 @click="toggleSidebar()"
                 aria-label="Basculer le menu">
             <span class="app-burger__box">
@@ -36,11 +38,11 @@
                     :class="{ 'app-topbar__user--active': open }"
                     @click="open = !open">
                 <span class="app-topbar__user-avatar">
-                    {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}
+                    {{ $user->initiales }}
                 </span>
                 <span class="app-topbar__user-text">
-                    <span class="app-topbar__user-name">{{ auth()->user()->name ?? 'Utilisateur' }}</span>
-                    <span class="app-topbar__user-role">{{ auth()->user()->email ?? '' }}</span>
+                    <span class="app-topbar__user-name">{{ $user->prenom }} {{ $user->nom }}</span>
+                    <span class="app-topbar__user-role">{{ $user->service }}</span>
                 </span>
                 <svg class="app-topbar__user-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
@@ -49,7 +51,8 @@
 
             <div class="app-user-menu" x-show="open" x-cloak x-transition>
                 <div class="app-user-menu__header">
-                    <div class="app-user-menu__name">{{ auth()->user()->name ?? 'Utilisateur' }}</div>
+                    <div class="app-user-menu__name">{{ $user->prenom }} {{ $user->nom }}</div>
+                    <div class="app-user-menu__email">{{ $user->email }}</div>
                 </div>
                 <a href="#" class="app-user-menu__link" @click.prevent="openProfileDrawer(); open = false">
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

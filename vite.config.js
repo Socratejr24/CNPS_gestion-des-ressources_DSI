@@ -6,37 +6,19 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
-                // Base
+                // Base (inclut Tailwind, polices et styles des composants Blade)
                 'resources/css/app.css',
                 'resources/js/app.js',
 
                 // Layouts
                 'resources/css/layouts/app.css',
-                 'resources/css/layouts/sidebar.css',
+                'resources/css/layouts/sidebar.css',
 
-                // Auth
+                // Pages
                 'resources/css/auth/login.css',
-
-                
-                // Dashboard
                 'resources/css/dashboard/index.css',
                 'resources/js/dashboard/charts.js',
-
-             // Demandes ← NOUVEAU
-    'resources/css/demandes/index.css',
-
-
-                // Composants
-                'resources/css/components/buttons.css',
-                'resources/css/components/forms.css',
-                'resources/css/components/badges.css',
-                'resources/css/components/icons.css',
-                'resources/css/components/cards.css',
-                'resources/css/components/tables.css',
-                'resources/css/components/alerts.css',
-                'resources/css/components/modals.css',
-                'resources/css/components/toasts.css',
-                'resources/css/components/filters.css',
+                'resources/css/demandes/index.css',
             ],
             refresh: true,
         }),
