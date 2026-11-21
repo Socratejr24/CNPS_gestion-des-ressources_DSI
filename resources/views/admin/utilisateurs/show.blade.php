@@ -4,7 +4,7 @@
 @section('page-title', 'Utilisateurs')
 
 @push('styles')
-    @vite('resources/css/admin/utilisateurs.css')
+    @vite('resources/css/admin/index.css')
 @endpush
 
 @php

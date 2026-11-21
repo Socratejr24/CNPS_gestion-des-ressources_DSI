@@ -11,6 +11,10 @@ use App\Http\Controllers\DepartementController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UtilisateurController;
 use App\Http\Controllers\Admin\UtilisateurController as AdminUtilisateurController;
+use App\Http\Controllers\Admin\OrganisationController as AdminOrganisationController;
+use App\Http\Controllers\Admin\StructureController as AdminStructureController;
+use App\Http\Controllers\Admin\DepartementController as AdminDepartementController;
+use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
 use App\Models\Role;
 
 Route::get('/', fn () => redirect('/login'));
@@ -117,5 +121,30 @@ Route::middleware('auth')->group(function () {
         Route::put('/utilisateurs/{utilisateur}/affectation', [AdminUtilisateurController::class, 'affecter'])->name('utilisateurs.affectation');
         Route::put('/utilisateurs/{utilisateur}/roles', [AdminUtilisateurController::class, 'attribuerRoles'])->name('utilisateurs.roles');
         Route::patch('/utilisateurs/{utilisateur}/statut', [AdminUtilisateurController::class, 'changerStatut'])->name('utilisateurs.statut');
+
+        // Organisation (SFD §2) — pas de suppression : désactivation uniquement.
+        Route::prefix('organisation')->name('organisation.')->group(function () {
+            Route::get('/', [AdminOrganisationController::class, 'index'])->name('index');
+
+            Route::get('/structures/nouvelle', [AdminStructureController::class, 'create'])->name('structures.create');
+            Route::post('/structures', [AdminStructureController::class, 'store'])->name('structures.store');
+            Route::get('/structures/{structure}/modifier', [AdminStructureController::class, 'edit'])->name('structures.edit');
+            Route::put('/structures/{structure}', [AdminStructureController::class, 'update'])->name('structures.update');
+            Route::patch('/structures/{structure}/statut', [AdminStructureController::class, 'changerStatut'])->name('structures.statut');
+
+            Route::get('/departements/nouveau', [AdminDepartementController::class, 'create'])->name('departements.create');
+            Route::post('/departements', [AdminDepartementController::class, 'store'])->name('departements.store');
+            Route::get('/departements/{departement}/modifier', [AdminDepartementController::class, 'edit'])->name('departements.edit');
+            Route::put('/departements/{departement}', [AdminDepartementController::class, 'update'])->name('departements.update');
+            Route::patch('/departements/{departement}/statut', [AdminDepartementController::class, 'changerStatut'])->name('departements.statut');
+            Route::put('/departements/{departement}/responsable', [AdminDepartementController::class, 'designerResponsable'])->name('departements.responsable');
+
+            Route::get('/services/nouveau', [AdminServiceController::class, 'create'])->name('services.create');
+            Route::post('/services', [AdminServiceController::class, 'store'])->name('services.store');
+            Route::get('/services/{service}/modifier', [AdminServiceController::class, 'edit'])->name('services.edit');
+            Route::put('/services/{service}', [AdminServiceController::class, 'update'])->name('services.update');
+            Route::patch('/services/{service}/statut', [AdminServiceController::class, 'changerStatut'])->name('services.statut');
+            Route::put('/services/{service}/chef', [AdminServiceController::class, 'designerChef'])->name('services.chef');
+        });
     });
 });

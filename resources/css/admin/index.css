@@ -1,5 +1,5 @@
 /* ============================================
-   ADMINISTRATION — UTILISATEURS
+   ADMINISTRATION (utilisateurs, organisation)
    (liste, création de prestataire, fiche)
    ============================================ */
 
@@ -421,4 +421,162 @@
     padding-left: 2.4rem;
     font-size: 0.85rem;
     line-height: 1.7;
+}
+
+.adm-kpi--static:hover { border-color: #e2e5f0; transform: none; }
+.adm-kpi--alerte.adm-kpi--static:hover { border-color: #f3c27e; }
+
+/* ============================================
+   ORGANISATION (arborescence)
+   ============================================ */
+
+.org-structure__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 1rem 1.25rem;
+    background: #f9fafc;
+    border-bottom: 1px solid #eef0f6;
+}
+
+.org-structure__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+}
+
+.org-title { display: flex; align-items: flex-start; gap: 0.6rem; min-width: 0; }
+.org-title__icon { color: #27357e; flex-shrink: 0; margin-top: 0.15rem; }
+
+.org-title__name,
+.org-dept__name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    font-family: 'Poppins', 'Inter', sans-serif;
+    font-weight: 600;
+    color: #1b2140;
+}
+.org-title__name { font-size: 1.05rem; }
+.org-dept__name { font-size: 0.92rem; }
+
+.org-desc { margin: 0.2rem 0 0; font-size: 0.8rem; color: #6b7190; }
+
+.org-code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.1rem 0.4rem;
+    border-radius: 5px;
+    background: #eef0f6;
+    color: #6b7190;
+}
+
+.org-actions { display: flex; align-items: center; gap: 0.25rem; flex-shrink: 0; }
+.org-inline { display: inline-flex; margin: 0; }
+.org-btn-off:hover { background: #fdecef; color: #c8102e; }
+.org-btn-on:hover { background: #e6f5ec; color: #088e39; }
+
+.org-dept {
+    border: 1px solid #e2e5f0;
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+}
+
+.org-dept__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.org-person { display: block; font-size: 0.78rem; color: #6b7190; margin-top: 0.15rem; }
+.org-person a { color: #27357e; font-weight: 500; text-decoration: none; }
+.org-person a:hover { text-decoration: underline; }
+.org-missing { color: #c26c0b; font-weight: 500; }
+
+.org-services {
+    list-style: none;
+    margin: 0.75rem 0 0;
+    padding: 0 0 0 1.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.org-service {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: 8px;
+    background: #f9fafc;
+}
+
+.org-service__main { flex: 1; min-width: 0; }
+
+.org-service__name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.86rem;
+    font-weight: 500;
+    color: #1b2140;
+}
+
+.org-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #6b7190;
+    text-decoration: none;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+}
+.org-count:hover { background: #eef0f6; color: #27357e; }
+
+.org-empty { margin: 0; font-size: 0.8rem; color: #6b7190; font-style: italic; }
+
+.org-off > * { opacity: 0.6; }
+
+.org-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 2.5rem 1.25rem;
+    text-align: center;
+    color: #6b7190;
+}
+.org-empty-state h3 { margin: 0; font-family: 'Poppins', 'Inter', sans-serif; color: #1b2140; }
+.org-empty-state p { margin: 0 0 0.5rem; font-size: 0.85rem; }
+
+.org-link-list {
+    list-style: none;
+    margin: 0 0 0.9rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    font-size: 0.86rem;
+}
+.org-link-list li { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; }
+.org-link-list a { color: #27357e; font-weight: 500; text-decoration: none; }
+.org-link-list a:hover { text-decoration: underline; }
+
+.org-current { margin: 0 0 1rem; font-size: 0.9rem; }
+.org-current a { color: #27357e; font-weight: 600; text-decoration: none; }
+
+@media (max-width: 640px) {
+    .org-services { padding-left: 0; }
+    .org-service { flex-wrap: wrap; }
 }
