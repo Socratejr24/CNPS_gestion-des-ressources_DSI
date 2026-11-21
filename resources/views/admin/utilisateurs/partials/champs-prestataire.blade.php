@@ -4,12 +4,13 @@
 <div class="adm-form__grid">
     <x-form.input name="prenom" label="Prénom" :value="$utilisateur?->prenom" :error="$errors->first('prenom')" required />
     <x-form.input name="nom" label="Nom" :value="$utilisateur?->nom" :error="$errors->first('nom')" required />
-    <x-form.input name="email" type="email" label="Adresse e-mail" :value="$utilisateur?->email" :error="$errors->first('email')" required />
+    <x-form.input name="email" type="email" label="Adresse e-mail" :value="$utilisateur?->email" :error="$errors->first('email')" required
+                  hint="Sert d'identifiant de connexion (onglet « Prestataire »)." />
     <x-form.input name="fonction" label="Fonction" :value="$utilisateur?->fonction" :error="$errors->first('fonction')"
                   placeholder="Ex. Consultant réseau" />
-    <x-form.input name="identifiant" label="Identifiant de connexion" :value="$utilisateur?->identifiant"
+    <x-form.input name="identifiant" label="Identifiant interne" :value="$utilisateur?->identifiant"
                   :error="$errors->first('identifiant')" required autocomplete="off"
-                  hint="Utilisé sur l'écran de connexion, onglet « Prestataire »." />
+                  hint="Référence unique du compte (ex. prenom.nom). Non utilisé pour se connecter." />
     <x-form.input name="matricule" label="Matricule / référence contrat" :value="$utilisateur?->matricule"
                   :error="$errors->first('matricule')" hint="Facultatif." />
 </div>

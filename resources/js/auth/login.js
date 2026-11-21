@@ -39,12 +39,18 @@ export function registerLoginForm() {
             },
 
             // --- Libellés selon le type de compte ---
+            // Les agents se connectent avec leur matricule (LDAP),
+            // les prestataires avec leur adresse e-mail (compte local).
             get identifiantLabel() {
-                return this.mode === 'prestataire' ? 'Identifiant' : 'Matricule';
+                return this.mode === 'prestataire' ? 'Adresse e-mail' : 'Matricule';
             },
 
             get identifiantPlaceholder() {
-                return this.mode === 'prestataire' ? 'Votre identifiant' : 'Votre matricule';
+                return this.mode === 'prestataire' ? 'prenom.nom@entreprise.ci' : 'Votre matricule';
+            },
+
+            get identifiantType() {
+                return this.mode === 'prestataire' ? 'email' : 'text';
             },
 
             // --- Actions ---

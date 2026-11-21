@@ -86,7 +86,7 @@
                     <label for="identifiant" class="login-field__label" x-text="identifiantLabel">Matricule</label>
                     <div class="login-field__control" :class="errorMessage && 'login-field__control--error'">
                         <x-icon name="user" size="sm" class="login-field__icon" />
-                        <input type="text" id="identifiant" name="identifiant" x-ref="identifiant"
+                        <input type="text" :type="identifiantType" id="identifiant" name="identifiant" x-ref="identifiant"
                                :placeholder="identifiantPlaceholder" placeholder="Votre matricule"
                                autocomplete="username" autocapitalize="none" spellcheck="false" autofocus required
                                @input="errorMessage = ''">
@@ -130,7 +130,7 @@
                     Votre compte est créé automatiquement à la première connexion.
                 </p>
                 <p x-show="mode === 'prestataire'" x-cloak>
-                    Utilisez l'identifiant transmis par la DSI.
+                    Utilisez l'<strong>adresse e-mail</strong> enregistrée par la DSI et le mot de passe qui vous a été transmis.
                     <strong>Mot de passe oublié ?</strong> Contactez l'administrateur de l'application pour le réinitialiser.
                 </p>
             </div>
