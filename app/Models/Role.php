@@ -19,6 +19,17 @@ class Role extends Model
 
     public const RECEVEUR = 'Receveur';
 
+    /**
+     * Rôles référencés par le code (accès admin, rôle par défaut LDAP, menu) :
+     * ils ne peuvent être ni renommés, ni désactivés, ni supprimés.
+     */
+    public const SYSTEME = [self::ADMINISTRATEUR, self::DEMANDEUR, self::RECEVEUR];
+
+    public function estSysteme(): bool
+    {
+        return in_array($this->getOriginal('libelle') ?? $this->libelle, self::SYSTEME, true);
+    }
+
     protected $table = 'roles';
 
     protected $attributes = ['is_active' => true];

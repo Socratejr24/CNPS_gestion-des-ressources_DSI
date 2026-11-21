@@ -162,4 +162,16 @@ class RoleRepository implements IRoleRepository
         return $role ? $role->permissions()->get() : new Collection();
     }
 
+    public function syncPermissions(int $roleId, array $permissionIds): ?Role
+    {
+        $role = Role::find($roleId);
+        if (! $role) {
+            return null;
+        }
+
+        $role->permissions()->sync(Permission::whereIn('id', $permissionIds)->pluck('id')->all());
+
+        return $role->fresh('permissions');
+    }
+
 }

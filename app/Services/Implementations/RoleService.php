@@ -80,5 +80,12 @@ class RoleService implements IRoleService
         return $this->roleRepository->getPermissions($roleId);
     }
 
+    public function syncRolePermissions(int $roleId, array $permissionIds): ?Role
+    {
+        $permissionIds = array_values(array_unique(array_map('intval', $permissionIds)));
+
+        return $this->roleRepository->syncPermissions($roleId, $permissionIds);
+    }
+
 
 }

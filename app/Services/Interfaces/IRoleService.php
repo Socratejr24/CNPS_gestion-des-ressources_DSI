@@ -22,4 +22,5 @@ interface IRoleService
     public function assignPermissionsToRole(int $roleId, array $permissionIds): array;
     public function removePermissionFromRole(int $roleId, int $permissionId): array;
     public function getRolePermissions(int $roleId): Collection;
+    public function syncRolePermissions(int $roleId, array $permissionIds): ?Role;
 }

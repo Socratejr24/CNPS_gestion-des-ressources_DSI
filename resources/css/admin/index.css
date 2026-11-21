@@ -580,3 +580,51 @@
     .org-services { padding-left: 0; }
     .org-service { flex-wrap: wrap; }
 }
+
+/* ============================================
+   RÔLES ET PERMISSIONS
+   ============================================ */
+
+.adm-tabs {
+    display: flex;
+    gap: 0.25rem;
+    border-bottom: 1px solid #e2e5f0;
+}
+
+.adm-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.65rem 1rem;
+    margin-bottom: -1px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: none;
+    font-family: 'Poppins', 'Inter', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #6b7190;
+}
+.adm-tab:hover { color: #27357e; }
+.adm-tab--active { color: #27357e; border-bottom-color: #27357e; font-weight: 600; }
+
+.adm-tab__count {
+    padding: 0.05rem 0.45rem;
+    border-radius: 99px;
+    background: #eef0f6;
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+a.adm-role { text-decoration: none; }
+a.adm-role:hover { border-color: #27357e; color: #27357e; }
+.adm-user__name + .adm-role { margin-left: 0.4rem; }
+
+.adm-danger-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.adm-danger-row .adm-card__text { margin: 0; }

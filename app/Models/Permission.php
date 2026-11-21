@@ -16,6 +16,16 @@ class Permission extends Model
 
     protected $attributes = ['is_active' => true];
 
+    /**
+     * Permissions créées par le seeder et identifiées par leur slug :
+     * leur slug ne peut pas changer et elles ne peuvent pas être supprimées.
+     */
+    public const SYSTEME = ['voir.traitement', 'voir.administration'];
+
+    public function estSysteme(): bool
+    {
+        return in_array($this->getOriginal('slug') ?? $this->slug, self::SYSTEME, true);
+    }
 
 
     protected $fillable = [

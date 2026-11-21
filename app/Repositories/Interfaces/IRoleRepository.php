@@ -24,5 +24,8 @@ interface IRoleRepository
     public function removePermission(int $roleId, int $permissionId): array;
     public function getPermissions(int $roleId): Collection;
 
+    /** Remplace l'ensemble des permissions du rôle par celles données (ids inexistants ignorés). */
+    public function syncPermissions(int $roleId, array $permissionIds): ?Role;
+
 }
 

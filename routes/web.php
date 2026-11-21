@@ -15,6 +15,8 @@ use App\Http\Controllers\Admin\OrganisationController as AdminOrganisationContro
 use App\Http\Controllers\Admin\StructureController as AdminStructureController;
 use App\Http\Controllers\Admin\DepartementController as AdminDepartementController;
 use App\Http\Controllers\Admin\ServiceController as AdminServiceController;
+use App\Http\Controllers\Admin\RoleController as AdminRoleController;
+use App\Http\Controllers\Admin\PermissionController as AdminPermissionController;
 use App\Models\Role;
 
 Route::get('/', fn () => redirect('/login'));
@@ -145,6 +147,26 @@ Route::middleware('auth')->group(function () {
             Route::put('/services/{service}', [AdminServiceController::class, 'update'])->name('services.update');
             Route::patch('/services/{service}/statut', [AdminServiceController::class, 'changerStatut'])->name('services.statut');
             Route::put('/services/{service}/chef', [AdminServiceController::class, 'designerChef'])->name('services.chef');
+        });
+
+        // Rôles fonctionnels (SFD §3.3) et catalogue des permissions.
+        Route::prefix('roles')->name('roles.')->group(function () {
+            Route::get('/', [AdminRoleController::class, 'index'])->name('index');
+            Route::get('/nouveau', [AdminRoleController::class, 'create'])->name('create');
+            Route::post('/', [AdminRoleController::class, 'store'])->name('store');
+
+            Route::get('/permissions/nouvelle', [AdminPermissionController::class, 'create'])->name('permissions.create');
+            Route::post('/permissions', [AdminPermissionController::class, 'store'])->name('permissions.store');
+            Route::get('/permissions/{permission}/modifier', [AdminPermissionController::class, 'edit'])->name('permissions.edit')->whereNumber('permission');
+            Route::put('/permissions/{permission}', [AdminPermissionController::class, 'update'])->name('permissions.update')->whereNumber('permission');
+            Route::patch('/permissions/{permission}/statut', [AdminPermissionController::class, 'changerStatut'])->name('permissions.statut')->whereNumber('permission');
+            Route::delete('/permissions/{permission}', [AdminPermissionController::class, 'destroy'])->name('permissions.destroy')->whereNumber('permission');
+
+            Route::get('/{role}/modifier', [AdminRoleController::class, 'edit'])->name('edit')->whereNumber('role');
+            Route::put('/{role}', [AdminRoleController::class, 'update'])->name('update')->whereNumber('role');
+            Route::put('/{role}/permissions', [AdminRoleController::class, 'permissions'])->name('permissions.sync')->whereNumber('role');
+            Route::patch('/{role}/statut', [AdminRoleController::class, 'changerStatut'])->name('statut')->whereNumber('role');
+            Route::delete('/{role}', [AdminRoleController::class, 'destroy'])->name('destroy')->whereNumber('role');
         });
     });
 });
