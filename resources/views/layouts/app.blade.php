@@ -80,6 +80,11 @@
         {{-- Modal déconnexion --}}
         @include('layouts.partials.logout-modal')
 
+        {{-- Messages flash Laravel → toasts (lus par toastManager au démarrage) --}}
+        @if(session('success'))
+            <div hidden data-flash-toast="{{ json_encode(['type' => 'success', 'title' => session('success')]) }}"></div>
+        @endif
+
         {{-- Container des toasts (global) --}}
         <x-toast-container />
     </div>

@@ -19,6 +19,7 @@ export default defineConfig({
                 'resources/css/dashboard/index.css',
                 'resources/js/dashboard/charts.js',
                 'resources/css/demandes/index.css',
+                'resources/css/admin/utilisateurs.css',
             ],
             refresh: true,
         }),

@@ -10,6 +10,8 @@ use App\Http\Controllers\StructureController;
 use App\Http\Controllers\DepartementController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UtilisateurController;
+use App\Http\Controllers\Admin\UtilisateurController as AdminUtilisateurController;
+use App\Models\Role;
 
 Route::get('/', fn () => redirect('/login'));
 
@@ -103,5 +105,17 @@ Route::middleware('auth')->group(function () {
     Route::middleware('affectation')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/demandes/mes-demandes', [DemandeController::class, 'index'])->name('demandes.index');
+    });
+
+    // Administration (SFD §3) — réservée au rôle Administrateur.
+    Route::prefix('admin')->name('admin.')->middleware('role:'.Role::ADMINISTRATEUR)->group(function () {
+        Route::get('/utilisateurs', [AdminUtilisateurController::class, 'index'])->name('utilisateurs.index');
+        Route::get('/utilisateurs/nouveau', [AdminUtilisateurController::class, 'create'])->name('utilisateurs.create');
+        Route::post('/utilisateurs', [AdminUtilisateurController::class, 'store'])->name('utilisateurs.store');
+        Route::get('/utilisateurs/{utilisateur}', [AdminUtilisateurController::class, 'show'])->name('utilisateurs.show');
+        Route::put('/utilisateurs/{utilisateur}', [AdminUtilisateurController::class, 'update'])->name('utilisateurs.update');
+        Route::put('/utilisateurs/{utilisateur}/affectation', [AdminUtilisateurController::class, 'affecter'])->name('utilisateurs.affectation');
+        Route::put('/utilisateurs/{utilisateur}/roles', [AdminUtilisateurController::class, 'attribuerRoles'])->name('utilisateurs.roles');
+        Route::patch('/utilisateurs/{utilisateur}/statut', [AdminUtilisateurController::class, 'changerStatut'])->name('utilisateurs.statut');
     });
 });
