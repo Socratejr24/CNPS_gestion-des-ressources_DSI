@@ -75,5 +75,8 @@ $this->app->bind(IPermissionRepository::class, PermissionRepository::class); // 
 
              //Référentiels (applications, ressources)
         $this->app->bind(\App\Services\Interfaces\IReferentielService::class, \App\Services\Implementations\ReferentielService::class);
+
+             //Demandes
+        $this->app->bind(\App\Services\Interfaces\IDemandeService::class, \App\Services\Implementations\DemandeService::class);
     }
 }

@@ -112,7 +112,15 @@ Route::middleware('auth')->group(function () {
     // Fonctionnalités métier : nécessitent une affectation organisationnelle.
     Route::middleware('affectation')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        // Demandes (SFD §6) : l'accès à chaque demande est contrôlé par DemandePolicy (RG-34).
         Route::get('/demandes/mes-demandes', [DemandeController::class, 'index'])->name('demandes.index');
+        Route::get('/demandes/nouvelle', [DemandeController::class, 'create'])->name('demandes.create');
+        Route::post('/demandes', [DemandeController::class, 'store'])->name('demandes.store');
+        Route::get('/demandes/{demande}', [DemandeController::class, 'show'])->whereNumber('demande')->name('demandes.show');
+        Route::get('/demandes/{demande}/modifier', [DemandeController::class, 'edit'])->whereNumber('demande')->name('demandes.edit');
+        Route::put('/demandes/{demande}', [DemandeController::class, 'update'])->whereNumber('demande')->name('demandes.update');
+        Route::delete('/demandes/{demande}', [DemandeController::class, 'destroy'])->whereNumber('demande')->name('demandes.destroy');
+        Route::post('/demandes/{demande}/soumettre', [DemandeController::class, 'soumettre'])->whereNumber('demande')->name('demandes.soumettre');
     });
 
     // Administration (SFD §3) — réservée au rôle Administrateur.

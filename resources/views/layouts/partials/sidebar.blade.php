@@ -16,7 +16,7 @@
             'visible' => true,
             'items' => [
                 ['route' => 'dashboard', 'actif' => 'dashboard', 'icon' => 'home', 'label' => 'Tableau de bord'],
-                ['route' => 'demandes.index', 'actif' => 'demandes.index', 'icon' => 'file-text', 'label' => 'Mes demandes'],
+                ['route' => 'demandes.index', 'actif' => ['demandes.index', 'demandes.show', 'demandes.edit'], 'icon' => 'file-text', 'label' => 'Mes demandes'],
                 ['route' => 'demandes.create', 'actif' => 'demandes.create', 'icon' => 'plus-circle', 'label' => 'Nouvelle demande'],
             ],
         ],

@@ -112,3 +112,4 @@
 .dash-status--cloturee       { background: #d9f0e2; color: #066a2b; } /* Vert */
 .dash-status--rejetee        { background: #fadadf; color: #8f0c21; } /* Rouge */
 .dash-status--regularisation { background: #fbdcc4; color: #8a3a00; } /* Orange foncé */
+.dash-status--impossible     { background: #f3d0d6; color: #6e0a1a; } /* Rouge foncé (statut ajouté) */

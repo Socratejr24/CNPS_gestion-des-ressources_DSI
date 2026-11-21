@@ -84,6 +84,9 @@
         @if(session('success'))
             <div hidden data-flash-toast="{{ json_encode(['type' => 'success', 'title' => session('success')]) }}"></div>
         @endif
+        @if(session('warning'))
+            <div hidden data-flash-toast="{{ json_encode(['type' => 'warning', 'title' => session('warning')]) }}"></div>
+        @endif
 
         {{-- Container des toasts (global) --}}
         <x-toast-container />

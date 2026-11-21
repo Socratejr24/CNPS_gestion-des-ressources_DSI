@@ -2,6 +2,12 @@
 
 namespace App\Enums;
 
+/**
+ * Statuts d'une demande (SFD §11, tableau 2).
+ *
+ * TRAITEMENT_IMPOSSIBLE est un 11e statut, ajouté pour trancher le point laissé
+ * ouvert par la SFD (§8.3 / §11.2 « signaler une impossibilité ») : état final.
+ */
 enum DemandeStatut: string
 {
     case BROUILLON                    = 'BROUILLON';
@@ -14,6 +20,7 @@ enum DemandeStatut: string
     case CLOTUREE                     = 'CLOTUREE';
     case REJETEE                      = 'REJETEE';
     case EN_COURS_REGULARISATION      = 'EN_COURS_REGULARISATION';
+    case TRAITEMENT_IMPOSSIBLE        = 'TRAITEMENT_IMPOSSIBLE';
 
     /**
      * Libellé court pour l'affichage.
@@ -31,6 +38,20 @@ enum DemandeStatut: string
             self::CLOTUREE                     => 'Clôturée',
             self::REJETEE                      => 'Rejetée',
             self::EN_COURS_REGULARISATION      => 'En régularisation',
+            self::TRAITEMENT_IMPOSSIBLE        => 'Traitement impossible',
+        };
+    }
+
+    /**
+     * Libellé complet (SFD tableau 2), pour les pages de détail.
+     */
+    public function libelleComplet(): string
+    {
+        return match ($this) {
+            self::INFO_COMPLEMENTAIRE_DEMANDEE => 'Informations complémentaires demandées',
+            self::EN_ATTENTE_CONFIRMATION      => 'En attente de confirmation de réception',
+            self::EN_COURS_REGULARISATION      => 'En cours de régularisation',
+            default                            => $this->label(),
         };
     }
 
@@ -51,14 +72,21 @@ enum DemandeStatut: string
             self::CLOTUREE                     => 'dash-status--cloturee',       // Vert
             self::REJETEE                      => 'dash-status--rejetee',        // Rouge
             self::EN_COURS_REGULARISATION      => 'dash-status--regularisation', // Orange foncé
+            self::TRAITEMENT_IMPOSSIBLE        => 'dash-status--impossible',     // Rouge foncé
         };
     }
 
     /**
-     * États finaux (SFD §11.3).
+     * États finaux (SFD §11.3, RG-32) + l'impossibilité de traitement.
      */
     public function estFinal(): bool
     {
-        return $this === self::CLOTUREE || $this === self::REJETEE;
+        return in_array($this, [self::CLOTUREE, self::REJETEE, self::TRAITEMENT_IMPOSSIBLE], true);
+    }
+
+    /** En cours de validation hiérarchique. */
+    public function estEnValidation(): bool
+    {
+        return $this === self::EN_ATTENTE_N1 || $this === self::EN_ATTENTE_N2;
     }
 }
