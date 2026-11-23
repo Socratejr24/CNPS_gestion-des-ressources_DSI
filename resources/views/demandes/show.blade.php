@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', $demande->reference)
-@section('page-title', 'Mes demandes')
+@section('page-title', $estDemandeur ? 'Mes demandes' : 'Demande '.$demande->reference)
 
 @push('styles')
     @vite(['resources/css/admin/index.css', 'resources/css/demandes/index.css'])
@@ -10,12 +10,20 @@
 @php
     $peutModifier = auth()->user()->can('update', $demande);
     $libellesEtat = ['fait' => 'Terminée', 'en_cours' => 'En cours', 'a_venir' => 'À venir', 'ignore' => 'Non requise', 'refuse' => 'Refusée'];
+    $rejet = $demande->statut === \App\Enums\DemandeStatut::REJETEE
+        ? $demande->evenements->where('action', \App\Enums\ActionDemande::REJET)->last()
+        : null;
+    $libelleNiveau = $niveau === 'N1' ? 'N+1 (chef de service)' : 'N+2 (responsable du département)';
 @endphp
 
 @section('content')
 <div class="adm-page">
 
-    <a href="{{ route('demandes.index') }}" class="adm-back"><x-icon name="arrow-left" size="sm" /> Retour à mes demandes</a>
+    @if($estDemandeur)
+        <a href="{{ route('demandes.index') }}" class="adm-back"><x-icon name="arrow-left" size="sm" /> Retour à mes demandes</a>
+    @elseif(Route::has('validations.index') && auth()->user()->estValidateur())
+        <a href="{{ route('validations.index') }}" class="adm-back"><x-icon name="arrow-left" size="sm" /> Retour aux demandes à valider</a>
+    @endif
 
     {{-- ===== EN-TÊTE ===== --}}
     <div class="adm-header">
@@ -49,6 +57,50 @@
     @error('regle_metier')
         <x-alert type="error" title="Action impossible" closable>{{ $message }}</x-alert>
     @enderror
+    @if($errors->hasAny(['motif', 'question', 'reponse', 'commentaire']))
+        <x-alert type="error" closable>{{ $errors->first('motif') ?: $errors->first('question') ?: $errors->first('reponse') ?: $errors->first('commentaire') }}</x-alert>
+    @endif
+
+    @if($rejet)
+        <x-alert type="error" title="Demande rejetée par {{ $rejet->utilisateur?->nomComplet() ?? '—' }} ({{ $rejet->niveau === 'N1' ? 'N+1' : 'N+2' }}) le {{ $rejet->created_at->format('d/m/Y') }}">
+            Motif : {{ $rejet->commentaire }}
+        </x-alert>
+    @endif
+
+    @if($posteVacant)
+        <x-alert type="warning" title="Validation bloquée">
+            Le poste de valideur {{ $libelleNiveau }} est vacant : personne ne peut statuer sur cette demande.
+            L'administrateur doit désigner un titulaire dans l'écran Organisation.
+        </x-alert>
+    @endif
+
+    {{-- Informations complémentaires demandées (SFD §10) --}}
+    @if($demande->statut === \App\Enums\DemandeStatut::INFO_COMPLEMENTAIRE_DEMANDEE && $question)
+        <section class="adm-card dem-question">
+            <header class="adm-card__header">
+                <h2 class="adm-card__title"><x-icon name="message" size="sm" /> Informations complémentaires demandées</h2>
+            </header>
+            <div class="adm-card__body">
+                <p class="dem-question__meta">
+                    {{ $question->utilisateur?->nomComplet() ?? '—' }}
+                    @if($question->niveau) ({{ $question->niveau === 'N1' ? 'N+1' : 'N+2' }})@endif
+                    · le {{ $question->created_at->format('d/m/Y à H:i') }}
+                </p>
+                <blockquote class="dem-question__texte">{{ $question->commentaire }}</blockquote>
+
+                @if($peutRepondre)
+                    <form method="POST" action="{{ route('demandes.repondre', $demande) }}" class="adm-inline-form">
+                        @csrf
+                        <x-form.textarea name="reponse" label="Votre réponse" rows="4" required :error="$errors->first('reponse')"
+                                         hint="Après votre réponse, la demande revient directement à la personne qui a posé la question, sans repasser par les validations déjà faites." />
+                        <div><x-button type="submit" icon="arrow-right">Envoyer ma réponse</x-button></div>
+                    </form>
+                @else
+                    <p class="form-hint">En attente de la réponse du demandeur.</p>
+                @endif
+            </div>
+        </section>
+    @endif
 
     <div class="adm-grid">
         <div class="adm-grid__main">
@@ -125,6 +177,22 @@
 
         {{-- ===== COLONNE LATÉRALE ===== --}}
         <aside class="adm-grid__side">
+            @if($peutDecider)
+                <section class="adm-card dem-decision" x-data>
+                    <header class="adm-card__header">
+                        <h2 class="adm-card__title"><x-icon name="shield" size="sm" /> Votre décision</h2>
+                    </header>
+                    <div class="adm-card__body">
+                        <p class="adm-card__text">Vous intervenez en tant que <strong>{{ $libelleNiveau }}</strong> du demandeur.</p>
+                        <div class="dem-decision__boutons">
+                            <x-button variant="success" icon="check-circle" block @click="$dispatch('open-modal-valider')">Valider</x-button>
+                            <x-button variant="outline" icon="message" block @click="$dispatch('open-modal-informations')">Demander des informations</x-button>
+                            <x-button variant="ghost-danger" icon="x-circle" block @click="$dispatch('open-modal-rejeter')">Rejeter</x-button>
+                        </div>
+                    </div>
+                </section>
+            @endif
+
             <section class="adm-card">
                 <header class="adm-card__header"><h2 class="adm-card__title"><x-icon name="check-circle" size="sm" /> Suivi</h2></header>
                 <div class="adm-card__body">
@@ -155,5 +223,51 @@
             </section>
         </aside>
     </div>
+
+    {{-- ===== FENÊTRES DE DÉCISION (valideur N+1 / N+2) ===== --}}
+    @if($peutDecider)
+        <x-modal id="modal-valider" title="Valider la demande" size="md">
+            <form method="POST" action="{{ route('validations.valider', $demande) }}" id="form-valider">
+                @csrf
+                <p class="adm-card__text">
+                    @if($niveau === 'N1')
+                        La demande sera transmise au responsable du département (N+2), ou directement au destinataire si la validation N+2 n'est pas requise.
+                    @else
+                        La demande sera transmise à son destinataire : {{ $demande->libelleDestination() }}.
+                    @endif
+                </p>
+                <x-form.textarea name="commentaire" label="Commentaire (facultatif)" rows="3" />
+            </form>
+            <x-slot:footer>
+                <x-button variant="ghost" @click="$dispatch('close-modal-valider')">Annuler</x-button>
+                <x-button type="submit" form="form-valider" variant="success" icon="check-circle">Valider</x-button>
+            </x-slot:footer>
+        </x-modal>
+
+        <x-modal id="modal-informations" title="Demander des informations complémentaires" size="md">
+            <form method="POST" action="{{ route('validations.informations', $demande) }}" id="form-informations">
+                @csrf
+                <p class="adm-card__text">La demande est mise en attente ; après la réponse du demandeur, elle vous reviendra directement.</p>
+                <x-form.textarea name="question" label="Informations attendues" rows="4" required
+                                 placeholder="Ex. Précisez la date d'arrivée de l'agent et le modèle souhaité." />
+            </form>
+            <x-slot:footer>
+                <x-button variant="ghost" @click="$dispatch('close-modal-informations')">Annuler</x-button>
+                <x-button type="submit" form="form-informations" icon="message">Envoyer la demande</x-button>
+            </x-slot:footer>
+        </x-modal>
+
+        <x-modal id="modal-rejeter" title="Rejeter la demande" size="md">
+            <form method="POST" action="{{ route('validations.rejeter', $demande) }}" id="form-rejeter">
+                @csrf
+                <p class="adm-card__text">Le rejet est <strong>définitif</strong> : la demande ne poursuivra pas son circuit. Le demandeur verra le motif.</p>
+                <x-form.textarea name="motif" label="Motif du rejet" rows="4" required />
+            </form>
+            <x-slot:footer>
+                <x-button variant="ghost" @click="$dispatch('close-modal-rejeter')">Annuler</x-button>
+                <x-button type="submit" form="form-rejeter" variant="danger" icon="x-circle">Rejeter définitivement</x-button>
+            </x-slot:footer>
+        </x-modal>
+    @endif
 </div>
 @endsection

@@ -12,6 +12,7 @@ use App\Models\Service;
 use App\Services\Demandes\CircuitValidation;
 use App\Services\Demandes\PerimetreReceveurs;
 use App\Services\Demandes\SuiviCircuit;
+use App\Services\Demandes\Valideurs;
 use App\Services\Interfaces\IDemandeService;
 use App\Services\Interfaces\IReferentielService;
 use Illuminate\Http\RedirectResponse;
@@ -71,9 +72,19 @@ class DemandeController extends Controller
             'evenements.utilisateur',
         ]);
 
+        $utilisateur = request()->user();
+        $estValidation = $demande->statut->estEnValidation();
+
         return view('demandes.show', [
             'demande' => $demande,
             'etapes' => SuiviCircuit::etapes($demande),
+            'estDemandeur' => $demande->demandeur_id === $utilisateur->id,
+            'peutDecider' => $utilisateur->can('decider', $demande),
+            'peutRepondre' => $utilisateur->can('repondre', $demande),
+            'niveau' => Valideurs::niveau($demande),
+            // Poste N+1 / N+2 devenu vacant après la soumission : personne ne peut statuer.
+            'posteVacant' => $estValidation && Valideurs::attendu($demande) === null,
+            'question' => $demande->derniereQuestion(),
         ]);
     }
 
@@ -110,6 +121,20 @@ class DemandeController extends Controller
         Gate::authorize('soumettre', $demande);
 
         return $this->tenterSoumission($request, $demande);
+    }
+
+    /** Réponse à une demande d'informations complémentaires (SFD §10.3). */
+    public function repondre(Request $request, Demande $demande): RedirectResponse
+    {
+        Gate::authorize('repondre', $demande);
+        $donnees = $request->validate(['reponse' => ['required', 'string', 'max:5000']], [
+            'reponse.required' => 'Saisissez votre réponse.',
+        ]);
+
+        $demande = $this->demandes->repondreAuComplement($demande, $request->user(), $donnees['reponse']);
+
+        return redirect()->route('demandes.show', $demande)
+            ->with('success', "Réponse envoyée : la demande est de nouveau « {$demande->statut->label()} ».");
     }
 
     // ------------------------------------------------------------------

@@ -33,4 +33,7 @@ interface IDemandeService
 
     /** Soumet un brouillon et l'engage dans le circuit de validation (SFD §7, §11.2). */
     public function soumettre(Demande $demande, User $auteur): Demande;
+
+    /** Réponse du demandeur à une demande d'informations : retour à l'étape concernée (RG-25, RG-26). */
+    public function repondreAuComplement(Demande $demande, User $demandeur, string $reponse): Demande;
 }

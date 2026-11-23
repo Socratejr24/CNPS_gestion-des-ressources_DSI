@@ -848,3 +848,22 @@ a.demandes-btn-primary { text-decoration: none; }
 .dem-histo__transition { font-size: 0.75rem; color: #6b7190; }
 .dem-histo__meta { margin: 0.1rem 0 0; font-size: 0.75rem; color: #6b7190; }
 .dem-histo__commentaire { margin: 0.35rem 0 0; padding: 0.5rem 0.7rem; border-radius: 8px; background: #f5f6fa; font-size: 0.82rem; color: #1b2140; }
+
+/* Validation et compléments (étape 3) */
+a.adm-tab { text-decoration: none; }
+.dem-decision { border-color: #27357e; box-shadow: 0 4px 16px rgba(39, 53, 126, 0.08); }
+.dem-decision__boutons { display: flex; flex-direction: column; gap: 0.5rem; }
+.dem-question { border-color: #f3c27e; }
+.dem-question .adm-card__header { background: #fff8ee; }
+.dem-question__meta { margin: 0 0 0.4rem; font-size: 0.8rem; color: #6b7190; }
+.dem-question__texte {
+    margin: 0 0 1rem;
+    padding: 0.75rem 1rem;
+    border-left: 3px solid #de7c0f;
+    border-radius: 0 8px 8px 0;
+    background: #fff8ee;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: #1b2140;
+    white-space: pre-line;
+}

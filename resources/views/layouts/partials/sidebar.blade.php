@@ -5,6 +5,11 @@
     $user = current_user();
     $compte = auth()->user();
 
+    // Détail d'une demande : « Mes demandes » si c'est la sienne, sinon l'écran de travail (validation…).
+    $demandeConsultee = request()->routeIs('demandes.show') ? request()->route('demande') : null;
+    $consulteLaSienne = $demandeConsultee instanceof \App\Models\Demande && $demandeConsultee->demandeur_id === $compte?->id;
+    $consulteCelleDAutrui = $demandeConsultee instanceof \App\Models\Demande && ! $consulteLaSienne;
+
     /*
      * Menu de navigation (SFD §3.3).
      * Une entrée n'est affichée que si sa route existe ET si l'utilisateur y a droit :
@@ -16,7 +21,7 @@
             'visible' => true,
             'items' => [
                 ['route' => 'dashboard', 'actif' => 'dashboard', 'icon' => 'home', 'label' => 'Tableau de bord'],
-                ['route' => 'demandes.index', 'actif' => ['demandes.index', 'demandes.show', 'demandes.edit'], 'icon' => 'file-text', 'label' => 'Mes demandes'],
+                ['route' => 'demandes.index', 'actif' => request()->routeIs('demandes.index', 'demandes.edit') || $consulteLaSienne, 'icon' => 'file-text', 'label' => 'Mes demandes'],
                 ['route' => 'demandes.create', 'actif' => 'demandes.create', 'icon' => 'plus-circle', 'label' => 'Nouvelle demande'],
             ],
         ],
@@ -25,7 +30,7 @@
             'label' => 'Validation',
             'visible' => $compte?->estValidateur() ?? false,
             'items' => [
-                ['route' => 'validations.index', 'actif' => 'validations.*', 'icon' => 'check-circle', 'label' => 'Demandes à valider'],
+                ['route' => 'validations.index', 'actif' => request()->routeIs('validations.*') || $consulteCelleDAutrui, 'icon' => 'check-circle', 'label' => 'Demandes à valider'],
             ],
         ],
         [
@@ -78,7 +83,7 @@
                 <div class="app-sidebar__section-label">{{ $section['label'] }}</div>
 
                 @foreach($section['items'] as $item)
-                    @php($actif = request()->routeIs($item['actif']))
+                    @php($actif = is_bool($item['actif']) ? $item['actif'] : request()->routeIs($item['actif']))
                     <a href="{{ route($item['route']) }}"
                        class="app-sidebar__link {{ $actif ? 'app-sidebar__link--active' : '' }}"
                        @if($actif) aria-current="page" @endif

@@ -39,6 +39,7 @@ class Demande extends Model
     {
         return [
             'statut' => DemandeStatut::class,
+            'statut_retour_complement' => DemandeStatut::class,
             'destination_type' => TypeDestination::class,
             'soumise_le' => 'datetime',
         ];
@@ -81,6 +82,18 @@ class Demande extends Model
     public function destinationUtilisateur(): BelongsTo
     {
         return $this->belongsTo(User::class, 'destination_utilisateur_id');
+    }
+
+    /** Auteur de la demande d'informations complémentaires en cours (SFD §10.2). */
+    public function complementDemandePar(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'complement_demande_par_id');
+    }
+
+    /** Dernière demande d'informations complémentaires (question posée au demandeur). */
+    public function derniereQuestion(): ?DemandeEvenement
+    {
+        return $this->evenements->where('action', \App\Enums\ActionDemande::DEMANDE_INFORMATIONS)->last();
     }
 
     /** Service du demandeur figé à la soumission (base du circuit N+1 / N+2). */

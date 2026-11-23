@@ -12,6 +12,8 @@ use App\Models\Role;
 use App\Models\Service;
 use App\Models\User;
 use App\Services\Demandes\CircuitValidation;
+use App\Services\Demandes\Complements;
+use App\Services\Demandes\Journal;
 use App\Services\Demandes\PerimetreReceveurs;
 use App\Services\Interfaces\IDemandeService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -74,7 +76,7 @@ class DemandeService implements IDemandeService
             $demande->save();
 
             $this->remplacerLignes($demande, $data['lignes'] ?? []);
-            $this->historiser($demande, $demandeur, ActionDemande::CREATION, null, DemandeStatut::BROUILLON);
+            Journal::ajouter($demande, $demandeur, ActionDemande::CREATION, null, DemandeStatut::BROUILLON);
 
             return $demande->refresh();
         });
@@ -88,7 +90,7 @@ class DemandeService implements IDemandeService
         return DB::transaction(function () use ($demande, $data, $auteur) {
             $demande->fill($this->champs($data))->save();
             $this->remplacerLignes($demande, $data['lignes'] ?? []);
-            $this->historiser($demande, $auteur, ActionDemande::MODIFICATION, DemandeStatut::BROUILLON, DemandeStatut::BROUILLON);
+            Journal::ajouter($demande, $auteur, ActionDemande::MODIFICATION, DemandeStatut::BROUILLON, DemandeStatut::BROUILLON);
 
             return $demande->refresh();
         });
@@ -123,12 +125,21 @@ class DemandeService implements IDemandeService
             $demande->soumise_le = now();
             $demande->save();
 
-            $this->historiser($demande, $auteur, ActionDemande::SOUMISSION, DemandeStatut::BROUILLON, $nouveau, $circuit->explication());
+            Journal::ajouter($demande, $auteur, ActionDemande::SOUMISSION, DemandeStatut::BROUILLON, $nouveau, $circuit->explication());
 
             // RG-20 : sans validation hiérarchique, la demande est transmise immédiatement.
             if ($nouveau === DemandeStatut::EN_ATTENTE_TRAITEMENT) {
-                $this->historiser($demande, $auteur, ActionDemande::TRANSMISSION, $nouveau, $nouveau, $demande->libelleDestination());
+                Journal::ajouter($demande, $auteur, ActionDemande::TRANSMISSION, $nouveau, $nouveau, $demande->libelleDestination());
             }
+
+            return $demande->refresh();
+        });
+    }
+
+    public function repondreAuComplement(Demande $demande, User $demandeur, string $reponse): Demande
+    {
+        return DB::transaction(function () use ($demande, $demandeur, $reponse) {
+            Complements::repondre($demande, $demandeur, $reponse);
 
             return $demande->refresh();
         });
@@ -287,24 +298,5 @@ class DemandeService implements IDemandeService
         $numero = $derniere ? ((int) substr($derniere, strlen($prefixe))) + 1 : 1;
 
         return $prefixe.str_pad((string) $numero, 5, '0', STR_PAD_LEFT);
-    }
-
-    private function historiser(
-        Demande $demande,
-        ?User $auteur,
-        ActionDemande $action,
-        ?DemandeStatut $ancien,
-        ?DemandeStatut $nouveau,
-        ?string $commentaire = null,
-        ?string $niveau = null,
-    ): void {
-        $demande->evenements()->create([
-            'utilisateur_id' => $auteur?->id,
-            'action' => $action,
-            'ancien_statut' => $ancien,
-            'nouveau_statut' => $nouveau,
-            'niveau' => $niveau,
-            'commentaire' => $commentaire,
-        ]);
     }
 }

@@ -22,6 +22,10 @@ final class SuiviCircuit
         $statut = $demande->statut;
         $evenements = $demande->evenements;
 
+        // Pendant une demande d'informations, l'étape qui l'a posée reste « en cours ».
+        $enAttenteInfos = $statut === DemandeStatut::INFO_COMPLEMENTAIRE_DEMANDEE;
+        $statutEffectif = $enAttenteInfos ? ($demande->statut_retour_complement ?? $statut) : $statut;
+
         $circuit = CircuitValidation::evaluer($demande->demandeur, $demande->serviceDemandeur);
 
         // Après soumission, le circuit réellement appliqué se lit dans l'historique.
@@ -39,15 +43,18 @@ final class SuiviCircuit
             fn ($e) => $e->action === $action && ($niveau === null || $e->niveau === $niveau)
         );
 
-        $etatValidation = function (string $niveau, bool $requis, DemandeStatut $attente) use ($statut, $a) {
+        $etatValidation = function (string $niveau, bool $requis, DemandeStatut $attente) use ($statutEffectif, $a) {
             return match (true) {
                 ! $requis => 'ignore',
                 $a(ActionDemande::VALIDATION, $niveau) => 'fait',
                 $a(ActionDemande::REJET, $niveau) => 'refuse',
-                $statut === $attente => 'en_cours',
+                $statutEffectif === $attente => 'en_cours',
                 default => 'a_venir',
             };
         };
+        $noteInfos = fn (DemandeStatut $attente, string $note) => $enAttenteInfos && $statutEffectif === $attente
+            ? 'Informations demandées au demandeur : en attente de sa réponse'
+            : $note;
 
         return [
             [
@@ -62,14 +69,16 @@ final class SuiviCircuit
                 'libelle' => 'Validation N+1',
                 'acteur' => $circuit->n1?->nomComplet() ?? 'Chef de service non désigné',
                 'etat' => $etatValidation('N1', $n1Requis, DemandeStatut::EN_ATTENTE_N1),
-                'note' => $n1Requis ? 'Chef de service' : 'Non requise : le demandeur est chef de service ou responsable du département',
+                'note' => $n1Requis
+                    ? $noteInfos(DemandeStatut::EN_ATTENTE_N1, 'Chef de service')
+                    : 'Non requise : le demandeur est chef de service ou responsable du département',
             ],
             [
                 'code' => 'N2',
                 'libelle' => 'Validation N+2',
                 'acteur' => $circuit->n2?->nomComplet() ?? 'Responsable non désigné',
                 'etat' => $etatValidation('N2', $n2Requis, DemandeStatut::EN_ATTENTE_N2),
-                'note' => $n2Requis ? 'Responsable du département' : ($n1Requis ? 'Non requise : même personne que le N+1' : 'Non requise : le demandeur est responsable du département'),
+                'note' => $n2Requis ? $noteInfos(DemandeStatut::EN_ATTENTE_N2, 'Responsable du département') : ($n1Requis ? 'Non requise : même personne que le N+1' : 'Non requise : le demandeur est responsable du département'),
             ],
             [
                 'code' => 'TRAITEMENT',
@@ -77,11 +86,13 @@ final class SuiviCircuit
                 'acteur' => $demande->libelleDestination(),
                 'etat' => match (true) {
                     $statut === DemandeStatut::TRAITEMENT_IMPOSSIBLE => 'refuse',
+                    in_array($statutEffectif, [DemandeStatut::EN_ATTENTE_TRAITEMENT, DemandeStatut::EN_COURS_TRAITEMENT, DemandeStatut::EN_COURS_REGULARISATION], true) => 'en_cours',
                     $a(ActionDemande::MISE_A_DISPOSITION) => 'fait',
-                    in_array($statut, [DemandeStatut::EN_ATTENTE_TRAITEMENT, DemandeStatut::EN_COURS_TRAITEMENT, DemandeStatut::EN_COURS_REGULARISATION], true) => 'en_cours',
                     default => 'a_venir',
                 },
-                'note' => 'Prise en charge et mise à disposition',
+                'note' => $statutEffectif === DemandeStatut::EN_COURS_TRAITEMENT
+                    ? $noteInfos(DemandeStatut::EN_COURS_TRAITEMENT, 'Prise en charge et mise à disposition')
+                    : 'Prise en charge et mise à disposition',
             ],
             [
                 'code' => 'RECEPTION',

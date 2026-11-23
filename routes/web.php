@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\ConnexionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DemandeController;
+use App\Http\Controllers\ValidationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\StructureController;
@@ -121,6 +122,13 @@ Route::middleware('auth')->group(function () {
         Route::put('/demandes/{demande}', [DemandeController::class, 'update'])->whereNumber('demande')->name('demandes.update');
         Route::delete('/demandes/{demande}', [DemandeController::class, 'destroy'])->whereNumber('demande')->name('demandes.destroy');
         Route::post('/demandes/{demande}/soumettre', [DemandeController::class, 'soumettre'])->whereNumber('demande')->name('demandes.soumettre');
+        Route::post('/demandes/{demande}/reponse', [DemandeController::class, 'repondre'])->whereNumber('demande')->name('demandes.repondre');
+
+        // Validation hiérarchique N+1 / N+2 (SFD §7) — contrôle fin par DemandePolicy::decider.
+        Route::get('/validations', [ValidationController::class, 'index'])->name('validations.index');
+        Route::post('/demandes/{demande}/valider', [ValidationController::class, 'valider'])->whereNumber('demande')->name('validations.valider');
+        Route::post('/demandes/{demande}/rejeter', [ValidationController::class, 'rejeter'])->whereNumber('demande')->name('validations.rejeter');
+        Route::post('/demandes/{demande}/informations', [ValidationController::class, 'demanderInformations'])->whereNumber('demande')->name('validations.informations');
     });
 
     // Administration (SFD §3) — réservée au rôle Administrateur.
