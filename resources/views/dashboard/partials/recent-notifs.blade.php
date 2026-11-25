@@ -4,19 +4,12 @@
             <x-icon name="bell" size="sm" />
             Notifications récentes
         </h3>
+        <a href="{{ route('notifications.index') }}" class="dash-block__view-all">Tout voir</a>
     </div>
 
-    <div class="dash-block__body">
-        @forelse($recentesNotifs as $notif)
-            <div class="dash-item">
-                <div class="dash-item__icon dash-item__icon--{{ $notif->type }}">
-                    <x-icon :name="$notif->icone" size="sm" />
-                </div>
-                <div class="dash-item__content">
-                    <p class="dash-item__title">{{ $notif->titre }}</p>
-                    <span class="dash-item__time">{{ $notif->temps }}</span>
-                </div>
-            </div>
+    <div class="dash-block__body dash-notifs">
+        @forelse($recentesNotifs as $notification)
+            @include('notifications.partials.item')
         @empty
             <div class="dash-empty">
                 <p class="dash-empty__text">Aucune notification.</p>

@@ -434,6 +434,7 @@
 .notif-item__icon--orange { background: #fdf0e1; color: #de7c0f; }
 .notif-item__icon--green  { background: #e0f2e7; color: #088e39; }
 .notif-item__icon--red    { background: #fadadf; color: #c8102e; }
+.notif-item__icon--violet { background: #f0e9f9; color: #5f3797; }
 
 .notif-item__content { flex: 1; min-width: 0; }
 .notif-item__title {
@@ -802,3 +803,15 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+/* Notifications réelles (module Demandes, étape 5) */
+.notif-item__message {
+    margin: 0.15rem 0 0.2rem;
+    font-size: 0.78rem;
+    line-height: 1.4;
+    color: #6b7190;
+    overflow-wrap: anywhere;
+}
+.app-drawer__empty { padding: 2rem 1rem; text-align: center; font-size: 0.85rem; color: #6b7190; }
+.app-drawer__footer form { margin: 0; }
+.app-drawer__footer .app-drawer__see-all { border: 0; background: none; width: 100%; cursor: pointer; font: inherit; }

@@ -41,7 +41,7 @@
         <span class="flex-1 bg-cnps-yellow"></span>
     </div>
 
-    <div class="app-shell" x-data="appLayout()">
+    <div class="app-shell" x-data="appLayout()" x-init="notifCount = {{ (int) (auth()->user()?->unreadNotifications()->count() ?? 0) }}">
 
         {{-- Loader global --}}
         @include('layouts.partials.loader')

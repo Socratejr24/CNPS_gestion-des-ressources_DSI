@@ -632,3 +632,8 @@ a.adm-role:hover { border-color: #27357e; color: #27357e; }
 /* Ligne désactivée dans une liste de référentiel */
 .adm-row-off td > * { opacity: 0.6; }
 .adm-row-off td.adm-col-actions > * { opacity: 1; }
+
+/* Page des notifications */
+a.adm-tab { text-decoration: none; }
+.notif-page .notif-item { border-bottom: 1px solid #eef0f6; }
+.notif-page .notif-item:last-of-type { border-bottom: 0; }

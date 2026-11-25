@@ -198,6 +198,7 @@
 .dash-item__icon--green  { background: #e0f2e7; color: #088e39; }
 .dash-item__icon--gray   { background: #f0f1f8; color: #6b7190; }
 .dash-item__icon--red    { background: #fadadf; color: #c8102e; }
+.dash-item__icon--violet { background: #f0e9f9; color: #5f3797; }
 
 .dash-item__content {
     flex: 1;
@@ -405,3 +406,33 @@
 /* Références et dates sur une seule ligne */
 .dash-item__meta { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .dash-item__content { min-width: 0; }
+
+/* ============================================
+   Données réelles (module Demandes, étape 5)
+   ============================================ */
+
+.dash-perimetre { display: flex; align-items: center; gap: 0.4rem; margin: 0; font-size: 0.8rem; color: #6b7190; }
+
+.dash-travail { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem; }
+.dash-travail__tuile {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid #e2e5f0;
+    border-radius: 12px;
+    background: #ffffff;
+    text-decoration: none;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.dash-travail__tuile:hover { border-color: #27357e; transform: translateY(-1px); }
+.dash-travail__tuile--actif { border-color: #f3c27e; background: #fffaf2; }
+.dash-travail__texte { flex: 1; display: flex; flex-direction: column; }
+.dash-travail__valeur { font-family: 'Poppins', 'Inter', sans-serif; font-size: 1.35rem; font-weight: 600; line-height: 1.2; color: #1b2140; }
+.dash-travail__label { font-size: 0.8rem; color: #6b7190; }
+.dash-travail__fleche { color: #9aa0bb; }
+
+.dash-item--lien { text-decoration: none; color: inherit; border-radius: 8px; }
+.dash-item--lien:hover { background: #f5f6fa; }
+.dash-chart-vide { padding: 3rem 1rem; text-align: center; }
+.dash-notifs .notif-item { padding-left: 0.5rem; padding-right: 0.5rem; }

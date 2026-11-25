@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DemandeController;
 use App\Http\Controllers\ValidationController;
 use App\Http\Controllers\TraitementController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\StructureController;
@@ -103,6 +104,11 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [ConnexionController::class, 'destroy'])->name('logout');
+
+    // Notifications internes (SFD §12.3).
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/{id}', [NotificationController::class, 'lire'])->whereUuid('id')->name('notifications.lire');
+    Route::post('/notifications/tout-lire', [NotificationController::class, 'toutLire'])->name('notifications.tout-lire');
 
     // RG-11 : page affichée tant que l'administrateur n'a pas affecté l'utilisateur.
     Route::get('/affectation-en-attente', function () {

@@ -23,7 +23,7 @@ final class Journal
         ?string $commentaire = null,
         ?string $niveau = null,
     ): DemandeEvenement {
-        return $demande->evenements()->create([
+        $evenement = $demande->evenements()->create([
             'utilisateur_id' => $auteur?->id,
             'action' => $action,
             'ancien_statut' => $ancien,
@@ -31,5 +31,12 @@ final class Journal
             'niveau' => $niveau,
             'commentaire' => $commentaire,
         ]);
+
+        // SFD §12 : chaque action tracée prévient les personnes concernées.
+        $evenement->setRelation('demande', $demande);
+        $evenement->setRelation('utilisateur', $auteur);
+        Notificateur::pour($evenement);
+
+        return $evenement;
     }
 }

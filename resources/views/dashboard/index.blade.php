@@ -14,7 +14,13 @@
     {{-- Bienvenue + actions principales --}}
     @include('dashboard.partials.welcome', ['user' => $user])
 
+    {{-- À faire selon les rôles et responsabilités --}}
+    @include('dashboard.partials.travail', ['travail' => $travail])
+
     {{-- Indicateurs --}}
+    @if($global)
+        <p class="dash-perimetre"><x-icon name="info" size="xs" /> Vue administrateur : indicateurs calculés sur l'ensemble des demandes soumises.</p>
+    @endif
     @include('dashboard.partials.kpis', ['kpis' => $kpis])
 
     {{-- Graphiques --}}
