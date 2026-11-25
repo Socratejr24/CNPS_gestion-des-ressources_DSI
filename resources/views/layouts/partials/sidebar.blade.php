@@ -9,6 +9,10 @@
     $demandeConsultee = request()->routeIs('demandes.show') ? request()->route('demande') : null;
     $consulteLaSienne = $demandeConsultee instanceof \App\Models\Demande && $demandeConsultee->demandeur_id === $compte?->id;
     $consulteCelleDAutrui = $demandeConsultee instanceof \App\Models\Demande && ! $consulteLaSienne;
+    // …côté receveur dès que la demande a quitté la validation hiérarchique.
+    $contexteTraitement = $consulteCelleDAutrui
+        && ($demandeConsultee->receveur_id === $compte?->id
+            || (($compte?->hasRole(Role::RECEVEUR) ?? false) && ! $demandeConsultee->statut->estEnValidation()));
 
     /*
      * Menu de navigation (SFD §3.3).
@@ -30,14 +34,14 @@
             'label' => 'Validation',
             'visible' => $compte?->estValidateur() ?? false,
             'items' => [
-                ['route' => 'validations.index', 'actif' => request()->routeIs('validations.*') || $consulteCelleDAutrui, 'icon' => 'check-circle', 'label' => 'Demandes à valider'],
+                ['route' => 'validations.index', 'actif' => request()->routeIs('validations.*') || ($consulteCelleDAutrui && ! $contexteTraitement), 'icon' => 'check-circle', 'label' => 'Demandes à valider'],
             ],
         ],
         [
             'label' => 'Traitement',
             'visible' => $compte?->hasRole(Role::RECEVEUR) ?? false,
             'items' => [
-                ['route' => 'traitement.index', 'actif' => 'traitement.*', 'icon' => 'inbox', 'label' => 'Demandes reçues'],
+                ['route' => 'traitement.index', 'actif' => request()->routeIs('traitement.*') || $contexteTraitement, 'icon' => 'inbox', 'label' => 'Demandes reçues'],
             ],
         ],
         [

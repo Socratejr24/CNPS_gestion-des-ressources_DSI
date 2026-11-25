@@ -79,5 +79,6 @@ $this->app->bind(IPermissionRepository::class, PermissionRepository::class); // 
              //Demandes
         $this->app->bind(\App\Services\Interfaces\IDemandeService::class, \App\Services\Implementations\DemandeService::class);
         $this->app->bind(\App\Services\Interfaces\IValidationService::class, \App\Services\Implementations\ValidationService::class);
+        $this->app->bind(\App\Services\Interfaces\ITraitementService::class, \App\Services\Implementations\TraitementService::class);
     }
 }

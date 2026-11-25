@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\ConnexionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DemandeController;
 use App\Http\Controllers\ValidationController;
+use App\Http\Controllers\TraitementController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\StructureController;
@@ -129,6 +130,18 @@ Route::middleware('auth')->group(function () {
         Route::post('/demandes/{demande}/valider', [ValidationController::class, 'valider'])->whereNumber('demande')->name('validations.valider');
         Route::post('/demandes/{demande}/rejeter', [ValidationController::class, 'rejeter'])->whereNumber('demande')->name('validations.rejeter');
         Route::post('/demandes/{demande}/informations', [ValidationController::class, 'demanderInformations'])->whereNumber('demande')->name('validations.informations');
+
+        // Traitement par le receveur (SFD §8, §9.3) — contrôle fin par DemandePolicy.
+        Route::get('/traitement', [TraitementController::class, 'index'])->name('traitement.index');
+        Route::post('/demandes/{demande}/prise-en-charge', [TraitementController::class, 'prendreEnCharge'])->whereNumber('demande')->name('traitement.prendre');
+        Route::post('/demandes/{demande}/informations-receveur', [TraitementController::class, 'demanderInformations'])->whereNumber('demande')->name('traitement.informations');
+        Route::post('/demandes/{demande}/mise-a-disposition', [TraitementController::class, 'mettreADisposition'])->whereNumber('demande')->name('traitement.disposition');
+        Route::post('/demandes/{demande}/impossibilite', [TraitementController::class, 'signalerImpossibilite'])->whereNumber('demande')->name('traitement.impossibilite');
+        Route::post('/demandes/{demande}/regularisation', [TraitementController::class, 'regulariser'])->whereNumber('demande')->name('traitement.regularisation');
+
+        // Réception par le demandeur (SFD §9.1, §9.2).
+        Route::post('/demandes/{demande}/confirmation', [DemandeController::class, 'confirmerReception'])->whereNumber('demande')->name('demandes.confirmer');
+        Route::post('/demandes/{demande}/anomalie', [DemandeController::class, 'signalerAnomalie'])->whereNumber('demande')->name('demandes.anomalie');
     });
 
     // Administration (SFD §3) — réservée au rôle Administrateur.

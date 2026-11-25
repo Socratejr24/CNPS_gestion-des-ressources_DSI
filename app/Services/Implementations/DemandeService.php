@@ -4,6 +4,7 @@ namespace App\Services\Implementations;
 
 use App\Enums\ActionDemande;
 use App\Enums\DemandeStatut;
+use App\Enums\NatureAnomalie;
 use App\Enums\TypeDestination;
 use App\Exceptions\RegleMetierException;
 use App\Models\Demande;
@@ -143,6 +144,82 @@ class DemandeService implements IDemandeService
 
             return $demande->refresh();
         });
+    }
+
+    // ==================================================================
+    // Réception (SFD §9)
+    // ==================================================================
+
+    public function confirmerReception(Demande $demande, User $demandeur, ?string $commentaire = null): Demande
+    {
+        $this->exigerConfirmationAttendue($demande, $demandeur);
+
+        return DB::transaction(function () use ($demande, $demandeur, $commentaire) {
+            $demande->statut = DemandeStatut::CLOTUREE;
+            $demande->cloturee_le = now();
+            $demande->save();
+
+            Journal::ajouter($demande, $demandeur, ActionDemande::CONFIRMATION_RECEPTION,
+                DemandeStatut::EN_ATTENTE_CONFIRMATION, DemandeStatut::CLOTUREE, filled($commentaire) ? trim($commentaire) : null);
+
+            return $demande->refresh();
+        });
+    }
+
+    public function signalerAnomalie(Demande $demande, User $demandeur, string $nature, array $lignes, string $description): Demande
+    {
+        $this->exigerConfirmationAttendue($demande, $demandeur);
+
+        $natureAnomalie = NatureAnomalie::tryFrom($nature)
+            ?? throw new RegleMetierException('Précisez la nature de l\'anomalie.');
+        if (blank($description)) {
+            throw new RegleMetierException('Décrivez l\'anomalie constatée.');
+        }
+
+        $demande->loadMissing('lignes.ressource');
+        $concernees = [];
+        foreach ($lignes as $ligneId => $quantite) {
+            $ligne = $demande->lignes->firstWhere('id', (int) $ligneId);
+            if ($ligne === null) {
+                throw new RegleMetierException('Ressource concernée inconnue pour cette demande.');
+            }
+            $concernees[] = ['ligne_id' => $ligne->id, 'quantite' => max(0, (int) $quantite)];
+        }
+        if ($concernees === []) {
+            throw new RegleMetierException('Indiquez au moins une ressource concernée par l\'anomalie.');
+        }
+
+        return DB::transaction(function () use ($demande, $demandeur, $natureAnomalie, $concernees, $description) {
+            $demande->anomalies()->create([
+                'signalee_par_id' => $demandeur->id,
+                'nature' => $natureAnomalie,
+                'description' => trim($description),
+                'lignes' => $concernees,
+            ]);
+
+            $demande->statut = DemandeStatut::EN_COURS_REGULARISATION;
+            $demande->save();
+
+            $ressources = collect($concernees)
+                ->map(fn ($c) => $demande->lignes->firstWhere('id', $c['ligne_id'])->ressource->designation.($c['quantite'] ? " ({$c['quantite']})" : ''))
+                ->implode(', ');
+
+            Journal::ajouter($demande, $demandeur, ActionDemande::SIGNALEMENT_ANOMALIE,
+                DemandeStatut::EN_ATTENTE_CONFIRMATION, DemandeStatut::EN_COURS_REGULARISATION,
+                "{$natureAnomalie->label()} — {$ressources}\n".trim($description));
+
+            return $demande->refresh();
+        });
+    }
+
+    private function exigerConfirmationAttendue(Demande $demande, User $demandeur): void
+    {
+        if ($demande->demandeur_id !== $demandeur->id) {
+            throw new RegleMetierException('Seul le demandeur peut confirmer la réception ou signaler une anomalie.');
+        }
+        if ($demande->statut !== DemandeStatut::EN_ATTENTE_CONFIRMATION) {
+            throw new RegleMetierException('Cette demande n\'est pas en attente de confirmation de réception.');
+        }
     }
 
     // ==================================================================

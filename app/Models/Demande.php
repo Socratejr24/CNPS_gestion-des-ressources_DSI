@@ -42,6 +42,9 @@ class Demande extends Model
             'statut_retour_complement' => DemandeStatut::class,
             'destination_type' => TypeDestination::class,
             'soumise_le' => 'datetime',
+            'prise_en_charge_le' => 'datetime',
+            'mise_a_disposition_le' => 'date',
+            'cloturee_le' => 'datetime',
         ];
     }
 
@@ -82,6 +85,24 @@ class Demande extends Model
     public function destinationUtilisateur(): BelongsTo
     {
         return $this->belongsTo(User::class, 'destination_utilisateur_id');
+    }
+
+    /** Receveur ayant pris en charge la demande (RG-23). */
+    public function receveur(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'receveur_id');
+    }
+
+    /** Anomalies de réception (SFD §9.2), de la plus ancienne à la plus récente. */
+    public function anomalies(): HasMany
+    {
+        return $this->hasMany(DemandeAnomalie::class)->orderBy('created_at')->orderBy('id');
+    }
+
+    /** Anomalie en attente de régularisation, s'il y en a une. */
+    public function anomalieEnCours(): ?DemandeAnomalie
+    {
+        return $this->anomalies->first(fn (DemandeAnomalie $a) => ! $a->estRegularisee());
     }
 
     /** Auteur de la demande d'informations complémentaires en cours (SFD §10.2). */

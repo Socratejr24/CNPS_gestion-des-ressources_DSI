@@ -21,7 +21,9 @@
 
     @if($estDemandeur)
         <a href="{{ route('demandes.index') }}" class="adm-back"><x-icon name="arrow-left" size="sm" /> Retour à mes demandes</a>
-    @elseif(Route::has('validations.index') && auth()->user()->estValidateur())
+    @elseif($demande->receveur_id === auth()->id() || $peutPrendre)
+        <a href="{{ route('traitement.index') }}" class="adm-back"><x-icon name="arrow-left" size="sm" /> Retour aux demandes reçues</a>
+    @elseif(auth()->user()->estValidateur())
         <a href="{{ route('validations.index') }}" class="adm-back"><x-icon name="arrow-left" size="sm" /> Retour aux demandes à valider</a>
     @endif
 
@@ -64,6 +66,25 @@
     @if($rejet)
         <x-alert type="error" title="Demande rejetée par {{ $rejet->utilisateur?->nomComplet() ?? '—' }} ({{ $rejet->niveau === 'N1' ? 'N+1' : 'N+2' }}) le {{ $rejet->created_at->format('d/m/Y') }}">
             Motif : {{ $rejet->commentaire }}
+        </x-alert>
+    @endif
+
+    @if($impossibilite)
+        <x-alert type="error" title="Traitement impossible — signalé par {{ $impossibilite->utilisateur?->nomComplet() ?? '—' }} le {{ $impossibilite->created_at->format('d/m/Y') }}">
+            {{ $impossibilite->commentaire }}
+        </x-alert>
+    @endif
+
+    @if($anomalieEnCours)
+        <x-alert type="warning" title="Anomalie de réception en cours de régularisation">
+            {{ $anomalieEnCours->nature->label() }} — {{ $anomalieEnCours->description }}
+        </x-alert>
+    @endif
+
+    @if($errors->hasAny(['lignes', 'lignes.*', 'date', 'justification', 'explication', 'nature', 'description', 'concernees']))
+        <x-alert type="error" closable>
+            {{ collect($errors->getMessages())->only(['lignes', 'date', 'justification', 'explication', 'nature', 'description', 'concernees'])->flatten()->first()
+               ?? collect($errors->get('lignes.*'))->flatten()->first() }}
         </x-alert>
     @endif
 
@@ -112,7 +133,22 @@
                     <dl class="adm-dl">
                         <div><dt>Application</dt><dd>{{ $demande->application ? $demande->application->nom.' ('.$demande->application->reference.')' : '—' }}</dd></div>
                         <div><dt>Destination</dt><dd>{{ $demande->destination_type ? $demande->libelleDestination() : 'Non renseignée' }}</dd></div>
+                        @if($demande->receveur)
+                            <div><dt>Receveur</dt><dd>{{ $demande->receveur->nomComplet() }} <span class="adm-cell-sub">depuis le {{ $demande->prise_en_charge_le?->format('d/m/Y') }}</span></dd></div>
+                        @endif
+                        @if($demande->mise_a_disposition_le)
+                            <div><dt>Mise à disposition</dt><dd>Le {{ $demande->mise_a_disposition_le->format('d/m/Y') }}</dd></div>
+                        @endif
+                        @if($demande->cloturee_le)
+                            <div><dt>Clôture</dt><dd>Le {{ $demande->cloturee_le->format('d/m/Y à H:i') }}</dd></div>
+                        @endif
                     </dl>
+                    @if($demande->observations_mise_a_disposition)
+                        <div class="dem-texte">
+                            <h3>Observations du receveur</h3>
+                            <p>{!! nl2br(e($demande->observations_mise_a_disposition)) !!}</p>
+                        </div>
+                    @endif
                     <div class="dem-texte">
                         <h3>Description ou motif</h3>
                         <p>{!! $demande->description ? nl2br(e($demande->description)) : '<span class="adm-cell-sub">Non renseignée</span>' !!}</p>
@@ -139,11 +175,55 @@
                             </td>
                             <td><span class="adm-role">{{ $ligne->ressource->categorie }}</span></td>
                             <td>{{ $ligne->quantite_demandee }}</td>
-                            <td>{{ $ligne->quantite_fournie ?? '—' }}</td>
+                            <td>
+                                @if($ligne->quantite_fournie === null)
+                                    —
+                                @else
+                                    <span class="{{ $ligne->quantite_fournie < $ligne->quantite_demandee ? 'dem-qte-ecart' : '' }}">{{ $ligne->quantite_fournie }}</span>
+                                @endif
+                                @if($ligne->observation)<span class="adm-cell-sub">{{ $ligne->observation }}</span>@endif
+                            </td>
                         </tr>
                     @endforeach
                 </x-table>
             </section>
+
+            {{-- Anomalies de réception (SFD §9.2, §9.3) --}}
+            @if($demande->anomalies->isNotEmpty())
+                <section class="adm-card">
+                    <header class="adm-card__header"><h2 class="adm-card__title"><x-icon name="alert-triangle" size="sm" /> Anomalies de réception ({{ $demande->anomalies->count() }})</h2></header>
+                    <div class="adm-card__body">
+                        <ol class="dem-anomalies">
+                            @foreach($demande->anomalies as $anomalie)
+                                <li class="dem-anomalie {{ $anomalie->estRegularisee() ? 'dem-anomalie--reglee' : '' }}">
+                                    <p class="dem-anomalie__titre">
+                                        <strong>{{ $anomalie->nature->label() }}</strong>
+                                        @if($anomalie->estRegularisee())
+                                            <x-badge state="validee" size="sm">Régularisée</x-badge>
+                                        @else
+                                            <x-badge state="attente" size="sm">En cours de régularisation</x-badge>
+                                        @endif
+                                    </p>
+                                    <p class="dem-histo__meta">Signalée par {{ $anomalie->signaleePar?->nomComplet() ?? '—' }} le {{ $anomalie->created_at->format('d/m/Y à H:i') }}</p>
+                                    <p class="dem-anomalie__ressources">
+                                        @foreach($anomalie->lignes as $concernee)
+                                            @php($l = $demande->lignes->firstWhere('id', $concernee['ligne_id']))
+                                            <span class="adm-role">{{ $l?->ressource->designation ?? 'Ressource supprimée' }}@if($concernee['quantite']) · {{ $concernee['quantite'] }}@endif</span>
+                                        @endforeach
+                                    </p>
+                                    <p class="dem-histo__commentaire">{{ $anomalie->description }}</p>
+                                    @if($anomalie->estRegularisee())
+                                        <p class="dem-histo__meta">
+                                            Régularisée par {{ $anomalie->regulariseePar?->nomComplet() ?? '—' }} le {{ $anomalie->regularisee_le->format('d/m/Y à H:i') }} :
+                                            {{ $anomalie->explication_regularisation }}
+                                        </p>
+                                    @endif
+                                </li>
+                            @endforeach
+                        </ol>
+                    </div>
+                </section>
+            @endif
 
             {{-- Historique --}}
             <section class="adm-card">
@@ -192,6 +272,9 @@
                     </div>
                 </section>
             @endif
+
+            @include('demandes.partials.traitement')
+            @include('demandes.partials.reception')
 
             <section class="adm-card">
                 <header class="adm-card__header"><h2 class="adm-card__title"><x-icon name="check-circle" size="sm" /> Suivi</h2></header>

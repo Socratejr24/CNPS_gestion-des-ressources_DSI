@@ -69,7 +69,7 @@ class DemandeController extends Controller
             'demandeur.service.departement', 'application', 'lignes.ressource',
             'destinationDepartement', 'destinationService', 'destinationUtilisateur.service',
             'serviceDemandeur.chef', 'serviceDemandeur.departement.responsable',
-            'evenements.utilisateur',
+            'evenements.utilisateur', 'receveur', 'anomalies.signaleePar', 'anomalies.regulariseePar',
         ]);
 
         $utilisateur = request()->user();
@@ -85,6 +85,16 @@ class DemandeController extends Controller
             // Poste N+1 / N+2 devenu vacant après la soumission : personne ne peut statuer.
             'posteVacant' => $estValidation && Valideurs::attendu($demande) === null,
             'question' => $demande->derniereQuestion(),
+            // Étape 4 : traitement et réception
+            'peutPrendre' => $utilisateur->can('prendreEnCharge', $demande),
+            'peutTraiter' => $utilisateur->can('traiter', $demande),
+            'peutRegulariser' => $utilisateur->can('regulariser', $demande),
+            'peutReceptionner' => $utilisateur->can('receptionner', $demande),
+            'anomalieEnCours' => $demande->anomalieEnCours(),
+            'impossibilite' => $demande->statut === DemandeStatut::TRAITEMENT_IMPOSSIBLE
+                ? $demande->evenements->where('action', \App\Enums\ActionDemande::IMPOSSIBILITE)->last()
+                : null,
+            'natures' => \App\Enums\NatureAnomalie::cases(),
         ]);
     }
 
@@ -135,6 +145,44 @@ class DemandeController extends Controller
 
         return redirect()->route('demandes.show', $demande)
             ->with('success', "Réponse envoyée : la demande est de nouveau « {$demande->statut->label()} ».");
+    }
+
+    /** Confirmation de la bonne réception : clôture (SFD §9.1). */
+    public function confirmerReception(Request $request, Demande $demande): RedirectResponse
+    {
+        Gate::authorize('receptionner', $demande);
+        $donnees = $request->validate(['commentaire' => ['nullable', 'string', 'max:2000']]);
+
+        $demande = $this->demandes->confirmerReception($demande, $request->user(), $donnees['commentaire'] ?? null);
+
+        return redirect()->route('demandes.show', $demande)
+            ->with('success', "Réception confirmée : la demande {$demande->reference} est clôturée.");
+    }
+
+    /** Signalement d'une anomalie de réception (SFD §9.2). */
+    public function signalerAnomalie(Request $request, Demande $demande): RedirectResponse
+    {
+        Gate::authorize('receptionner', $demande);
+        $donnees = $request->validate([
+            'nature' => ['required', Rule::enum(\App\Enums\NatureAnomalie::class)],
+            'description' => ['required', 'string', 'max:2000'],
+            'concernees' => ['required', 'array', 'min:1'],
+            'concernees.*' => ['integer'],
+            'quantites' => ['nullable', 'array'],
+            'quantites.*' => ['nullable', 'integer', 'min:0', 'max:9999'],
+        ], [
+            'concernees.required' => 'Cochez au moins une ressource concernée.',
+            'description.required' => 'Décrivez l\'anomalie constatée.',
+        ], ['nature' => 'nature de l\'anomalie']);
+
+        $lignes = collect($donnees['concernees'])
+            ->mapWithKeys(fn ($id) => [(int) $id => (int) ($donnees['quantites'][$id] ?? 0)])
+            ->all();
+
+        $this->demandes->signalerAnomalie($demande, $request->user(), $donnees['nature'], $lignes, $donnees['description']);
+
+        return redirect()->route('demandes.show', $demande)
+            ->with('success', 'Anomalie signalée : le receveur va procéder à la régularisation.');
     }
 
     // ------------------------------------------------------------------

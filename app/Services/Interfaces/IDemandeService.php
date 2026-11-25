@@ -36,4 +36,13 @@ interface IDemandeService
 
     /** Réponse du demandeur à une demande d'informations : retour à l'étape concernée (RG-25, RG-26). */
     public function repondreAuComplement(Demande $demande, User $demandeur, string $reponse): Demande;
+
+    /** Confirme la bonne réception : clôture de la demande (RG-28, SFD §9.1, §9.4). */
+    public function confirmerReception(Demande $demande, User $demandeur, ?string $commentaire = null): Demande;
+
+    /**
+     * Signale une anomalie de réception (RG-29, SFD §9.2).
+     * $lignes : [ligne_id => quantite_concernee] pour les ressources concernées.
+     */
+    public function signalerAnomalie(Demande $demande, User $demandeur, string $nature, array $lignes, string $description): Demande;
 }

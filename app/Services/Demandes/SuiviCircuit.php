@@ -67,7 +67,7 @@ final class SuiviCircuit
             [
                 'code' => 'N1',
                 'libelle' => 'Validation N+1',
-                'acteur' => $circuit->n1?->nomComplet() ?? 'Chef de service non désigné',
+                'acteur' => $n1Requis ? ($circuit->n1?->nomComplet() ?? 'Chef de service non désigné') : '—',
                 'etat' => $etatValidation('N1', $n1Requis, DemandeStatut::EN_ATTENTE_N1),
                 'note' => $n1Requis
                     ? $noteInfos(DemandeStatut::EN_ATTENTE_N1, 'Chef de service')
@@ -76,7 +76,7 @@ final class SuiviCircuit
             [
                 'code' => 'N2',
                 'libelle' => 'Validation N+2',
-                'acteur' => $circuit->n2?->nomComplet() ?? 'Responsable non désigné',
+                'acteur' => $n2Requis ? ($circuit->n2?->nomComplet() ?? 'Responsable non désigné') : '—',
                 'etat' => $etatValidation('N2', $n2Requis, DemandeStatut::EN_ATTENTE_N2),
                 'note' => $n2Requis ? $noteInfos(DemandeStatut::EN_ATTENTE_N2, 'Responsable du département') : ($n1Requis ? 'Non requise : même personne que le N+1' : 'Non requise : le demandeur est responsable du département'),
             ],
