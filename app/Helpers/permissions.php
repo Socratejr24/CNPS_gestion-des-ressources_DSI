@@ -48,7 +48,8 @@ if (! function_exists('current_user')) {
             'categorie' => $user->categorie?->label(),
             'structure' => $departement?->structure?->libelle ?? '—',
             'departement' => $departement?->libelle ?? '—',
-            'service' => $user->service?->libelle ?? 'Affectation en attente',
+            // L'administrateur est dispensé d'affectation (RG-11) : pas de « en attente » pour lui.
+            'service' => $user->service?->libelle ?? ($user->estAdministrateur() ? 'Administrateur' : 'Affectation en attente'),
             'roles' => $user->roles->where('is_active', true)->pluck('libelle')->values()->all(),
         ];
     }

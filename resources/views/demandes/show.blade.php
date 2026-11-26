@@ -19,7 +19,9 @@
 @section('content')
 <div class="adm-page">
 
-    @if($estDemandeur)
+    @if(request('depuis') === 'admin' && auth()->user()->estAdministrateur())
+        <a href="{{ route('admin.demandes.index') }}" class="adm-back"><x-icon name="arrow-left" size="sm" /> Retour à toutes les demandes</a>
+    @elseif($estDemandeur)
         <a href="{{ route('demandes.index') }}" class="adm-back"><x-icon name="arrow-left" size="sm" /> Retour à mes demandes</a>
     @elseif($demande->receveur_id === auth()->id() || $peutPrendre)
         <a href="{{ route('traitement.index') }}" class="adm-back"><x-icon name="arrow-left" size="sm" /> Retour aux demandes reçues</a>

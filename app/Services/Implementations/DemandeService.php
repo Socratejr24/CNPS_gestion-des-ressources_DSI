@@ -43,6 +43,35 @@ class DemandeService implements IDemandeService
             ->withQueryString();
     }
 
+    public function rechercherPourAdministration(array $filtres = []): Builder
+    {
+        $finaux = collect(DemandeStatut::cases())->filter(fn (DemandeStatut $s) => $s->estFinal())->values()->all();
+        $etat = $filtres['etat'] ?? null;
+
+        return Demande::query()
+            ->where('statut', '!=', DemandeStatut::BROUILLON)
+            ->with(['demandeur', 'serviceDemandeur.departement', 'application', 'receveur',
+                'destinationDepartement', 'destinationService', 'destinationUtilisateur'])
+            ->when($filtres['q'] ?? null, function (Builder $q, string $terme) {
+                $motif = '%'.$terme.'%';
+                $q->where(fn (Builder $q) => $q
+                    ->where('reference', 'LIKE', $motif)
+                    ->orWhere('objet', 'LIKE', $motif)
+                    ->orWhereHas('demandeur', fn (Builder $q) => $q
+                        ->where('nom', 'LIKE', $motif)->orWhere('prenom', 'LIKE', $motif)->orWhere('matricule', 'LIKE', $motif)));
+            })
+            ->when($etat === 'EN_COURS', fn (Builder $q) => $q->whereNotIn('statut', $finaux))
+            ->when($etat === 'TERMINEES', fn (Builder $q) => $q->whereIn('statut', $finaux))
+            ->when($etat && DemandeStatut::tryFrom($etat), fn (Builder $q) => $q->where('statut', $etat))
+            ->when($filtres['departement_id'] ?? null, fn (Builder $q, $id) => $q
+                ->whereHas('serviceDemandeur', fn (Builder $q) => $q->where('departement_id', $id)))
+            ->when($filtres['destination_type'] ?? null, fn (Builder $q, $type) => $q->where('destination_type', $type))
+            ->when($filtres['du'] ?? null, fn (Builder $q, $du) => $q->whereDate('soumise_le', '>=', $du))
+            ->when($filtres['au'] ?? null, fn (Builder $q, $au) => $q->whereDate('soumise_le', '<=', $au))
+            ->latest('soumise_le')
+            ->latest('id');
+    }
+
     public function compteursDemandeur(User $demandeur): array
     {
         $parStatut = Demande::where('demandeur_id', $demandeur->id)

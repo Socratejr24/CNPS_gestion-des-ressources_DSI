@@ -19,6 +19,13 @@ interface IDemandeService
     /** Filtres : q (référence ou objet), statut. */
     public function listerPourDemandeur(User $demandeur, array $filtres = [], int $parPage = 15): LengthAwarePaginator;
 
+    /**
+     * Toutes les demandes soumises, pour l'administrateur (SFD §3.3.1). Brouillons exclus.
+     * Filtres : q, etat (EN_COURS | TERMINEES | code de statut), departement_id (du demandeur),
+     * destination_type, du, au (date de soumission, AAAA-MM-JJ).
+     */
+    public function rechercherPourAdministration(array $filtres = []): \Illuminate\Database\Eloquent\Builder;
+
     /** @return array{total:int, brouillons:int, validation:int, action:int, cloturees:int} */
     public function compteursDemandeur(User $demandeur): array;
 

@@ -637,3 +637,7 @@ a.adm-role:hover { border-color: #27357e; color: #27357e; }
 a.adm-tab { text-decoration: none; }
 .notif-page .notif-item { border-bottom: 1px solid #eef0f6; }
 .notif-page .notif-item:last-of-type { border-bottom: 0; }
+
+/* Filtres de période (Toutes les demandes) */
+.adm-filters__date { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; color: #6b7190; }
+.adm-filters__date .adm-filters__select { flex: 0 0 auto; min-width: 0; width: 150px; }

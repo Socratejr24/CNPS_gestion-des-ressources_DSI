@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\RoleController as AdminRoleController;
 use App\Http\Controllers\Admin\PermissionController as AdminPermissionController;
 use App\Http\Controllers\Admin\ApplicationController as AdminApplicationController;
 use App\Http\Controllers\Admin\RessourceController as AdminRessourceController;
+use App\Http\Controllers\Admin\DemandeController as AdminDemandeController;
 use App\Models\Role;
 
 Route::get('/', fn () => redirect('/login'));
@@ -185,6 +186,10 @@ Route::middleware('auth')->group(function () {
             Route::patch('/services/{service}/statut', [AdminServiceController::class, 'changerStatut'])->name('services.statut');
             Route::put('/services/{service}/chef', [AdminServiceController::class, 'designerChef'])->name('services.chef');
         });
+
+        // Consultation de toutes les demandes (SFD §3.3.1) — lecture seule, export CSV.
+        Route::get('/demandes', [AdminDemandeController::class, 'index'])->name('demandes.index');
+        Route::get('/demandes/export', [AdminDemandeController::class, 'export'])->name('demandes.export');
 
         // Référentiels des demandes (SFD §4 et §5) — pas de suppression : désactivation.
         Route::get('/applications', [AdminApplicationController::class, 'index'])->name('applications.index');

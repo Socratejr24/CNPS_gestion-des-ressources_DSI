@@ -7,8 +7,10 @@
 
     // Détail d'une demande : « Mes demandes » si c'est la sienne, sinon l'écran de travail (validation…).
     $demandeConsultee = request()->routeIs('demandes.show') ? request()->route('demande') : null;
-    $consulteLaSienne = $demandeConsultee instanceof \App\Models\Demande && $demandeConsultee->demandeur_id === $compte?->id;
-    $consulteCelleDAutrui = $demandeConsultee instanceof \App\Models\Demande && ! $consulteLaSienne;
+    // Ouverte depuis « Toutes les demandes » (administration) : c'est cette entrée qui est active.
+    $depuisAdmin = $demandeConsultee instanceof \App\Models\Demande && request('depuis') === 'admin' && ($compte?->estAdministrateur() ?? false);
+    $consulteLaSienne = $demandeConsultee instanceof \App\Models\Demande && ! $depuisAdmin && $demandeConsultee->demandeur_id === $compte?->id;
+    $consulteCelleDAutrui = $demandeConsultee instanceof \App\Models\Demande && ! $depuisAdmin && ! $consulteLaSienne;
     // …côté receveur dès que la demande a quitté la validation hiérarchique.
     $contexteTraitement = $consulteCelleDAutrui
         && ($demandeConsultee->receveur_id === $compte?->id
@@ -48,6 +50,7 @@
             'label' => 'Administration',
             'visible' => $compte?->estAdministrateur() ?? false,
             'items' => [
+                ['route' => 'admin.demandes.index', 'actif' => request()->routeIs('admin.demandes.*') || $depuisAdmin, 'icon' => 'file-text', 'label' => 'Toutes les demandes'],
                 ['route' => 'admin.utilisateurs.index', 'actif' => 'admin.utilisateurs.*', 'icon' => 'users', 'label' => 'Utilisateurs'],
                 ['route' => 'admin.organisation.index', 'actif' => 'admin.organisation.*', 'icon' => 'building', 'label' => 'Organisation'],
                 ['route' => 'admin.roles.index', 'actif' => 'admin.roles.*', 'icon' => 'shield', 'label' => 'Rôles et permissions'],
